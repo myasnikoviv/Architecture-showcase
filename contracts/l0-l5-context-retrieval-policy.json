@@ -1,0 +1,88 @@
+{
+  "$schema": "Progressive Context Retrieval Gate Policy (Sanitized Reference)",
+  "version": "1.1.0",
+  "purpose": "Operational retrieval permission for multi-agent design-system engineering. File availability in the repository does not grant permission to load a source into the agent context.",
+  "entrypoint": {
+    "required_l0": [
+      "AGENTS.md",
+      "process/authority/RETRIEVAL_POLICY.json",
+      "process/authority/AUTHORITY_MANIFEST.json",
+      "process/tickets/<ticket-id>_CURRENT_DECISION.md"
+    ],
+    "minimum_order": [
+      "L0",
+      "L1",
+      "L2",
+      "HUMAN_VISUAL_GATE_OR_FROZEN_CONTRACT",
+      "L3",
+      "L4"
+    ],
+    "broad_search_rule": "Search strictly within layers granted by this policy. Matches outside granted layers require an explicit L5 forensic summons."
+  },
+  "layers": {
+    "L0": {
+      "name": "Minimum active governance context",
+      "automatic": true,
+      "purpose": "Operating rules, active human decision extract, and authority manifest.",
+      "excludes": [
+        "component inventories",
+        "Widgetbook specimens",
+        "historical audits",
+        "legacy HTML prototypes",
+        "generated build artifacts"
+      ]
+    },
+    "L1": {
+      "name": "Semantic design principles",
+      "automatic_when": "Current-decision extract identifies a specific visual or structural need.",
+      "allowed_route_roles": ["PRINCIPLE"],
+      "rule": "Load only matching principle routes; avoid dumping entire design manuals into context."
+    },
+    "L2": {
+      "name": "Canonical demonstrations",
+      "automatic_when": "L1 principles are resolved and a demonstrated compositional relationship is required.",
+      "allowed_route_roles": ["DEMONSTRATION"],
+      "rule": "Proves only its stated compositional relationship; never acts as blanket layout approval."
+    },
+    "L3": {
+      "name": "System & code mapping",
+      "automatic_when": "Visual direction passed an explicit human approval gate or a frozen contract exists.",
+      "allowed_statuses": ["IMPLEMENTATION_SOURCE"],
+      "allowed_sources": [
+        "@design-system/tokens",
+        "@design-system/react APIs",
+        "@design-system/motion-react contracts",
+        "Widgetbook specimens"
+      ],
+      "rule": "Determines how to implement an approved decision, never what the product should look like."
+    },
+    "L4": {
+      "name": "Specialist & automated QA",
+      "automatic": false,
+      "requires": "Explicit task need and scoped invocation (accessibility, contrast, visual parity).",
+      "rule": "Subordinate to L0-L3 authority; cannot alter art direction or design tokens."
+    },
+    "L5": {
+      "name": "Forensic & historical archive",
+      "automatic": false,
+      "requires": [
+        "explicit summons",
+        "stated reason",
+        "exact question answered",
+        "nonauthoritative declaration"
+      ],
+      "includes": ["closed remediation tickets", "superseded prototypes", "migration provenance"]
+    },
+    "L6": {
+      "name": "Excluded noise",
+      "automatic": false,
+      "includes": ["**/dist", "**/node_modules", "unapproved exploration drafts", "generated build output"],
+      "rule": "Permanently excluded from agent reasoning."
+    }
+  },
+  "skill_isolation": {
+    "default": "Generic frontend/UI skills cannot inject visual judgment or override L0-L2 authority.",
+    "implementation_or_mapping_only": ["frontend-design", "ui-ux-design", "design-system", "typography"],
+    "qa_only": ["design-audit", "contrast-checker", "web-design-guidelines"]
+  }
+}

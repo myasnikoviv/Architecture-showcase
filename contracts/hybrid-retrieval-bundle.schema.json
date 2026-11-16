@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HybridRetrievalBundleManifestContract",
+  "description": "Sanitized contract for zero-network local hybrid search combining Tantivy (BM25) and ONNX Runtime (multilingual-e5-small 384-d embeddings) via Reciprocal Rank Fusion.",
+  "type": "object",
+  "required": [
+    "contract",
+    "version",
+    "source_catalogue_sha256",
+    "runtime_pins",
+    "vector_encoder",
+    "retrieval_policy",
+    "document_count",
+    "documents"
+  ],
+  "properties": {
+    "contract": {
+      "type": "string",
+      "enum": ["HYBRID_CATALOGUE_INDEX_BUNDLE_V1"]
+    },
+    "version": {
+      "type": "integer",
+      "enum": [1]
+    },
+    "source_catalogue_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runtime_pins": {
+      "type": "object",
+      "required": ["tantivy", "onnxruntime", "tokenizers"],
+      "properties": {
+        "tantivy": { "type": "string", "const": "0.26.2" },
+        "onnxruntime": { "type": "string", "const": "1.31.0" },
+        "tokenizers": { "type": "string", "const": "0.23.3" }
+      }
+    },
+    "vector_encoder": {
+      "type": "object",
+      "required": [
+        "model_repository",
+        "model_revision",
+        "dimension",
+        "max_tokens",
+        "pooling",
+        "execution_provider",
+        "file_hashes"
+      ],
+      "properties": {
+        "model_repository": { "type": "string", "const": "intfloat/multilingual-e5-small" },
+        "model_revision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "dimension": { "type": "integer", "const": 384 },
+        "max_tokens": { "type": "integer", "const": 512 },
+        "pooling": { "type": "string", "const": "ATTENTION_MASK_MEAN_L2_V1" },
+        "execution_provider": { "type": "string", "const": "CPUExecutionProvider" },
+        "file_hashes": {
+          "type": "object",
+          "required": ["onnx/model.onnx", "tokenizer.json", "config.json", "tokenizer_config.json"],
+          "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "retrieval_policy": {
+      "type": "object",
+      "required": [
+        "required_lanes",
+        "failure_policy",
+        "lexical_only_fallback",
+        "model_provider_fallback",
+        "per_lane_limit",
+        "fused_union_limit",
+        "fusion"
+      ],
+      "properties": {
+        "required_lanes": {
+          "type": "array",
+          "const": ["BM25", "VECTOR"]
+        },
+        "failure_policy": {
+          "type": "string",
+          "const": "HYBRID_RETRIEVAL_UNAVAILABLE_FAIL_CLOSED"
+        },
+        "lexical_only_fallback": { "type": "boolean", "const": false },
+        "model_provider_fallback": { "type": "boolean", "const": false },
+        "per_lane_limit": { "type": "integer", "const": 100 },
+        "fused_union_limit": { "type": "integer", "const": 200 },
+        "fusion": {
+          "type": "object",
+          "required": ["algorithm", "k", "ordering"],
+          "properties": {
+            "algorithm": { "type": "string", "const": "RECIPROCAL_RANK_FUSION" },
+            "k": { "type": "integer", "const": 60 },
+            "ordering": {
+              "type": "array",
+              "const": [
+                "rrf_score_desc",
+                "best_lane_rank_asc",
+                "bm25_rank_asc_nulls_last",
+                "vector_rank_asc_nulls_last",
+                "source_record_id_asc"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "document_count": { "type": "integer", "minimum": 1 },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_record_id", "source_json_pointer", "document_sha256"],
+        "properties": {
+          "source_record_id": { "type": "string", "minLength": 1 },
+          "source_json_pointer": { "type": "string", "pattern": "^/" },
+          "document_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EpistemicPropositionOutputContract",
+  "description": "Sanitized architectural contract demonstrating deterministic provenance, epistemic classification, and anti-hallucination boundaries for LLM-assisted audit pipelines.",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "subject_id",
+    "generated_at",
+    "input_snapshot_sha256",
+    "model_metadata",
+    "claims",
+    "interventions",
+    "unknowns"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "enum": ["epistemic-proposition/1.0.0"]
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "input_snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "model_metadata": {
+      "type": "object",
+      "required": ["provider", "model", "temperature", "web_access"],
+      "properties": {
+        "provider": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" },
+        "web_access": {
+          "type": "boolean",
+          "enum": [false],
+          "description": "Synthesis models are isolated from live web search to enforce snapshot determinism."
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "domain",
+          "predicate",
+          "subject",
+          "value",
+          "status",
+          "epistemic_class",
+          "evidence_refs",
+          "statement",
+          "confidence",
+          "causal_claim"
+        ],
+        "properties": {
+          "claim_id": { "type": "string", "pattern": "^CLM-[0-9]{3,}[A-Z]?$" },
+          "domain": {
+            "type": "string",
+            "enum": [
+              "PHYSICAL_ATTRIBUTE",
+              "PRESENTATION_MEDIA",
+              "GEOSPATIAL_CONTEXT",
+              "SOCIOECONOMIC_CONTEXT",
+              "ENVIRONMENTAL_HAZARD",
+              "COMPARATIVE_MARKET"
+            ]
+          },
+          "predicate": { "type": "string" },
+          "subject": { "type": "string" },
+          "value": {},
+          "status": {
+            "type": "string",
+            "enum": ["OBSERVED", "UNKNOWN", "UNAVAILABLE"]
+          },
+          "epistemic_class": {
+            "type": "string",
+            "enum": [
+              "CANONICAL_FACT",
+              "DETERMINISTIC_DERIVATION",
+              "MODEL_OBSERVATION",
+              "MODEL_ASSESSMENT",
+              "RISK_HYPOTHESIS",
+              "PROVENANCE_RECORD"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "statement": { "type": "string" },
+          "confidence": {
+            "type": "string",
+            "enum": ["HIGH", "MEDIUM", "LOW"]
+          },
+          "causal_claim": {
+            "type": "boolean",
+            "description": "Explicitly distinguishes correlation/hypothesis from causal assertion."
+          }
+        }
+      }
+    },
+    "interventions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "intervention_id",
+          "priority",
+          "classification",
+          "action",
+          "target_domain",
+          "evidence_refs",
+          "expected_mechanism"
+        ],
+        "properties": {
+          "intervention_id": { "type": "string", "pattern": "^INT-[0-9]{3,}$" },
+          "priority": { "type": "string", "enum": ["P0", "P1", "P2"] },
+          "classification": {
+            "type": "string",
+            "enum": ["CONTROLLED_EXPERIMENT", "HYGIENE_FIX", "DATA_VERIFICATION"]
+          },
+          "action": { "type": "string" },
+          "target_domain": { "type": "string" },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "expected_mechanism": { "type": "string" }
+        }
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "status", "reason"],
+        "properties": {
+          "field": { "type": "string" },
+          "status": { "type": "string", "enum": ["UNKNOWN", "UNAVAILABLE"] },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}
