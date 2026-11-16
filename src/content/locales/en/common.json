@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "siteTitle": "Engineering Architecture Showcase | Systems, ML Validation & Contracts",
+    "siteDescription": "Interactive systems architecture companion to github.com/myasnikoviv/Architecture-showcase covering Property Intelligence, Oracle & Wave Y, and GÜELGA."
+  },
+  "nav": {
+    "brandTitle": "Engineering Architecture Showcase",
+    "subtitleBadge": "Interactive Systems & Contracts Companion",
+    "links": {
+      "overview": "Overview",
+      "techExplorer": "Tech Explorer",
+      "pi": "01. Property Intelligence",
+      "oracle": "02. Oracle & Wave Y",
+      "guelga": "03. GÜELGA",
+      "contracts": "Contracts"
+    },
+    "actions": {
+      "githubShowcase": "GitHub Showcase",
+      "githubShowcaseUrl": "https://github.com/myasnikoviv/Architecture-showcase",
+      "agentsSystem": "Agents-system Repo",
+      "agentsSystemUrl": "https://github.com/myasnikoviv/Agents-system",
+      "authorPortfolio": "Author Portfolio",
+      "authorPortfolioUrl": "https://www.linkedin.com/in/myasnikoviv/",
+      "backToOverview": "Back to Overview",
+      "openFullDeepDive": "Open Dedicated System Page",
+      "openRawOnGitHub": "Open Raw on GitHub",
+      "copyJson": "Copy JSON",
+      "copied": "Copied"
+    }
+  },
+  "contractsSection": {
+    "id": "contracts",
+    "eyebrow": "CONTRACT-FIRST ENFORCEMENT",
+    "heading": "Inspect the Enforcement Contracts Directly",
+    "intro": "Prompts suggest behavior; schemas and policy manifests enforce it. Browse the sanitized reference contracts below (read directly from /contracts/*.json) or open the full repository on GitHub.",
+    "contracts": [
+      {
+        "id": "epistemic",
+        "filename": "epistemic-forensic-proposition.schema.json",
+        "systemLabel": "01 / Property Intelligence",
+        "systemId": "pi",
+        "caption": "Locks synthesis models to web_access: false and enforces explicit epistemic_class, evidence_refs, and UNKNOWN/UNAVAILABLE state preservation.",
+        "invariants": [
+          "model_metadata.web_access locked to false",
+          "Every claim requires sha256 input_snapshot_sha256 & minItems: 1 evidence_refs",
+          "status enum explicitly preserves OBSERVED | UNKNOWN | UNAVAILABLE"
+        ],
+        "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
+      },
+      {
+        "id": "hybrid",
+        "filename": "hybrid-retrieval-bundle.schema.json",
+        "systemLabel": "01 / Property Intelligence",
+        "systemId": "pi",
+        "caption": "Pins Tantivy 0.26.2 + ONNX Runtime 1.31.0 (multilingual-e5-small), verifies SHA-256 Hugging Face blob hashes, and bans silent single-lane fallbacks.",
+        "invariants": [
+          "lexical_only_fallback and model_provider_fallback hardcoded to false",
+          "Reciprocal Rank Fusion (k=60) with deterministic 5-key tie-break ordering",
+          "Verifies exact 40-char HF revision and 64-char SHA-256 blob hashes offline"
+        ],
+        "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
+      },
+      {
+        "id": "context",
+        "filename": "l0-l5-context-retrieval-policy.json",
+        "systemLabel": "03 / GÜELGA",
+        "systemId": "guelga",
+        "caption": "Separates design principles, human approval gates, implementation tokens, and excluded build noise so multi-agent workflows resist context rot.",
+        "invariants": [
+          "File presence in repo never grants retrieval permission without layer match",
+          "HUMAN_VISUAL_GATE_OR_FROZEN_CONTRACT required before L3 implementation opens",
+          "Generic UI skills isolated to implementation_or_mapping_only or qa_only"
+        ],
+        "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/l0-l5-context-retrieval-policy.json"
+      }
+    ]
+  },
+  "footer": {
+    "headline": "Want to inspect live TypeScript + LangGraph orchestration code alongside these architecture blueprints?",
+    "subcopy": "Browse the open-source multi-agent control plane repository or inspect the complete Markdown case studies and Mermaid diagrams on GitHub.",
+    "ctas": {
+      "showcase": "Explore Architecture-showcase on GitHub",
+      "agentsSystem": "Explore Open-Source Agents-system (630+ files, 174 Jest suites)",
+      "portfolio": "Connect on LinkedIn"
+    },
+    "copyright": "Engineering Architecture Showcase · Open Architecture, Private IP"
+  }
+}

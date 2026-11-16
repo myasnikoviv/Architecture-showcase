@@ -1,0 +1,316 @@
+{
+  "eyebrow": "STACK & PATTERN MATRIX",
+  "heading": "Inspect the Stack Inside Real Architecture",
+  "intro": "Click any technology or engineering pattern below to trace where it runs, why it was chosen over simpler alternatives, and which contract or case study documents it.",
+  "allFilterLabel": "All Systems",
+  "detailPrefix": {
+    "usedIn": "Active In",
+    "whyChosen": "Architectural Rationale",
+    "inspectArtifact": "Inspect Case Study / Contract"
+  },
+  "categories": [
+    {
+      "id": "ml-quant",
+      "title": "Machine Learning & Quantitative Validation",
+      "items": [
+        {
+          "id": "lightgbm",
+          "label": "LightGBM 4.6 (LGBMClassifier / LGBMRegressor)",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Oracle supervised probability & exit-policy challengers (max_depth=3, num_leaves=8 complexity bounds) inside Trade Bot.",
+          "whyChosen": "Captures non-linear feature interactions while depth constraints and calibrated linear baselines prevent overfitting noisy financial series.",
+          "artifact": {
+            "label": "Case Study 02: Oracle Supervised ML",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "sklearn",
+          "label": "Scikit-Learn 1.9 (LogisticRegression, StandardScaler, SimpleImputer)",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Direction-only and full-feature linear benchmark pipelines inside Oracle cross-validation.",
+          "whyChosen": "Provides calibrated probabilistic baselines; tree challengers must beat linear log-loss and ROC-AUC out-of-sample before promotion.",
+          "artifact": {
+            "label": "Case Study 02: Challenger vs. Baseline Suite",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "umap-hdbscan",
+          "label": "UMAP + HDBSCAN 0.8.33 + SciPy",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Wave Y unsupervised regime discovery pipeline over 30+ microstructural and cross-asset features.",
+          "whyChosen": "Projects non-linear state spaces into density clusters with explicit noise separation rather than forcing every bar into arbitrary k-means centroids.",
+          "artifact": {
+            "label": "Case Study 02: Wave Y Regime Discovery",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "purged-cv",
+          "label": "Purged Walk-Forward & Episode-Grouped CV",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Expanding quantile split validator enforcing outcomeAvailableAt < fold_start and PURGE_4H_MS embargo.",
+          "whyChosen": "Eliminates forward-window lookahead bias and overlapping episode leakage that invalidate naive time-series k-fold results.",
+          "artifact": {
+            "label": "Case Study 02: Leakage Prevention",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "ablation",
+          "label": "Feature Ablation & Counterfactual Attribution",
+          "systems": ["oracle", "pi"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Wave Y hl02 feature ablation + Property Intelligence typed facet retrieval ablation benchmarks.",
+          "whyChosen": "Measures marginal signal contribution per feature group so uninformative dimensions are pruned rather than carried into production.",
+          "artifact": {
+            "label": "Case Study 02: Wave Y Validation",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        }
+      ]
+    },
+    {
+      "id": "search-vision",
+      "title": "Hybrid Search, Embeddings & Vision AI",
+      "items": [
+        {
+          "id": "tantivy",
+          "label": "Tantivy 0.26.2 (Rust BM25)",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "Lexical top-100 retrieval lane inside hybrid_catalogue_index.py with parser-safe term serialization.",
+          "whyChosen": "Delivers fast in-process BM25 scoring on exact material, SKU, and dimension facets with zero external database dependencies.",
+          "artifact": {
+            "label": "Contract: hybrid-retrieval-bundle.schema.json",
+            "path": "contracts/hybrid-retrieval-bundle.schema.json",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
+          }
+        },
+        {
+          "id": "onnx",
+          "label": "ONNX Runtime 1.31.0 (multilingual-e5-small 384-d)",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "Sequential CPU dense vector encoder (attention-mask mean pooling + L2 normalization) inside Property Intelligence.",
+          "whyChosen": "Runs quantized/pinned local embeddings deterministically offline, avoiding external API rate limits and cost spikes during Beam Search.",
+          "artifact": {
+            "label": "Contract: hybrid-retrieval-bundle.schema.json",
+            "path": "contracts/hybrid-retrieval-bundle.schema.json",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
+          }
+        },
+        {
+          "id": "rrf",
+          "label": "Reciprocal Rank Fusion (k=60) & Beam Search",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "Fuses BM25 and ONNX vector candidate rankings before multi-item Beam Search ensemble optimization.",
+          "whyChosen": "Combines lexical exactness and semantic similarity without brittle score-scale calibration, using deterministic 5-key tie-breaking.",
+          "artifact": {
+            "label": "Case Study 01: Local Hybrid Retrieval",
+            "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+          }
+        },
+        {
+          "id": "gemini-vision",
+          "label": "Gemini Vision API + Manhattan Camera Calibration",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "Photo observation stages paired with deterministic wide-angle normalization and 2D spatial clearance linting.",
+          "whyChosen": "Separates pixel-level room observations from geometric camera math so vision models never hallucinate square footage.",
+          "artifact": {
+            "label": "Case Study 01: Vision & Spatial Projection",
+            "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+          }
+        }
+      ]
+    },
+    {
+      "id": "data-geo",
+      "title": "Data Engineering & Geospatial OSINT",
+      "items": [
+        {
+          "id": "duckdb",
+          "label": "DuckDB 1.5 (httpfs + spatial)",
+          "systems": ["pi", "oracle"],
+          "primarySystem": "pi",
+          "whereItRuns": "Remote Overture Maps spatial queries in Property Intelligence and columnar Parquet feature scans in Trade Bot.",
+          "whyChosen": "Executes analytical SQL and geospatial predicates directly over Parquet/Overture files with zero warehouse cluster overhead.",
+          "artifact": {
+            "label": "Case Study 01: Geospatial OSINT",
+            "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+          }
+        },
+        {
+          "id": "pyarrow-parquet",
+          "label": "Apache Arrow / PyArrow 16.1 + Parquet",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Multi-gigabyte market archive storage and feature pipeline transport across Oracle and Wave Y.",
+          "whyChosen": "Zero-copy columnar reads paired with SHA-256 digest verification ensure reproducible historical replay.",
+          "artifact": {
+            "label": "Case Study 02: Data Lakehouse",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "postgres-redis",
+          "label": "PostgreSQL + Redis (ioredis) + SQLite",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "discovery_dataset_rows, execution lifecycle persistence, and optimizer dispatch queues in Trade Bot.",
+          "whyChosen": "Separates durable transactional trade state (PostgreSQL) from low-latency queue signaling (Redis) and portable local state (SQLite).",
+          "artifact": {
+            "label": "Case Study 02: Hybrid Lakehouse",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "shapely-osint",
+          "label": "Shapely 2.0 + Overture Maps + Catastro / INE / IGN",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "Property-centered geospatial buffers, Haversine/IDW metrics, and official Spanish demographic/hazard joins.",
+          "whyChosen": "Grounds location intelligence in official government endpoints and deterministic geometry while flagging NoData cells as UNKNOWN.",
+          "artifact": {
+            "label": "Case Study 01: Geospatial OSINT",
+            "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+          }
+        }
+      ]
+    },
+    {
+      "id": "orchestration",
+      "title": "Orchestration, Compilers & Governance",
+      "items": [
+        {
+          "id": "dag-orchestrator",
+          "label": "18-Stage Python DAG Orchestrator (S01-S18)",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "SingleActionStage and ItemSequenceStage orchestrator with CheckpointManager and StageLogger span tracing.",
+          "whyChosen": "Allows partial resume after transient provider errors without re-executing costly upstream vision or API calls.",
+          "artifact": {
+            "label": "Case Study 01: DAG Orchestrator",
+            "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+          }
+        },
+        {
+          "id": "json-schema-ajv",
+          "label": "200 JSON Schema Contracts + AJV + Semantic Validators",
+          "systems": ["pi", "oracle"],
+          "primarySystem": "pi",
+          "whereItRuns": "Epistemic output guards in Property Intelligence and compiled block logic validation in Trade Bot.",
+          "whyChosen": "Turns model and strategy invariants into deterministic CI gates instead of hoping prose prompts stay compliant.",
+          "artifact": {
+            "label": "Contract: epistemic-forensic-proposition.schema.json",
+            "path": "contracts/epistemic-forensic-proposition.schema.json",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
+          }
+        },
+        {
+          "id": "ast-compiler",
+          "label": "TypeScript AST Node-Graph Compiler & 1:1 Replay",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Compiles @xyflow/react strategy graphs into runtime blocks verified by proc204/proc206 replay harnesses.",
+          "whyChosen": "Guarantees identical decision logic across backtest, historical replay, paper trading, and live Express 5/CCXT execution.",
+          "artifact": {
+            "label": "Case Study 02: Compiler & Execution Parity",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "l0-l5-gate",
+          "label": "L0-L5 Progressive Context Retrieval Gate",
+          "systems": ["guelga"],
+          "primarySystem": "guelga",
+          "whereItRuns": "Governs which layers of the GÜELGA repository AI personas can load during brand, UI, and QA tickets.",
+          "whyChosen": "Prevents context rot from rejected prototypes and stops generic UI skills from overriding approved brand tokens.",
+          "artifact": {
+            "label": "Contract: l0-l5-context-retrieval-policy.json",
+            "path": "contracts/l0-l5-context-retrieval-policy.json",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/l0-l5-context-retrieval-policy.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "frontend-qa",
+      "title": "Frontend, Visualization & Automated QA",
+      "items": [
+        {
+          "id": "react-monorepo",
+          "label": "React 19 + NPM Workspaces Monorepo (@guelga/*)",
+          "systems": ["guelga", "pi"],
+          "primarySystem": "guelga",
+          "whereItRuns": "6 shared design-system packages powering Widgetbook (@guelga/docs), apps/web, and Journey State prototype.",
+          "whyChosen": "Enforces strict separation between pure token/component libraries and decoupled view-model presentation surfaces.",
+          "artifact": {
+            "label": "Case Study 03: Monorepo Graph",
+            "path": "case-studies/03-guelga-design-system-and-context-governance.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/03-guelga-design-system-and-context-governance.md"
+          }
+        },
+        {
+          "id": "react-flow",
+          "label": "@xyflow/react (React Flow v12) + Dagre + Lightweight Charts",
+          "systems": ["oracle"],
+          "primarySystem": "oracle",
+          "whereItRuns": "Visual strategy cockpit in Trade Bot with Zustand state and automated DAG node layout.",
+          "whyChosen": "Lets researchers compose complex conditional block graphs visually while enforcing strict JSON Schema compilation.",
+          "artifact": {
+            "label": "Case Study 02: Visual Strategy Cockpit",
+            "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
+          }
+        },
+        {
+          "id": "svg-floorplan",
+          "label": "Layered SVG 2D Floorplan Projection & React 19 UI",
+          "systems": ["pi"],
+          "primarySystem": "pi",
+          "whereItRuns": "Python SVG plan composer feeding an isolated React 19 + Vite + Tailwind CSS v4 presentation bundle.",
+          "whyChosen": "Keeps geometry deterministic on the Python side and turns the browser app into a pure zero-inference renderer.",
+          "artifact": {
+            "label": "Case Study 01: Isolated Presentation Layer",
+            "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+          }
+        },
+        {
+          "id": "playwright-axe",
+          "label": "Playwright (CDP & Headless) + Axe-core (WCAG)",
+          "systems": ["guelga", "pi"],
+          "primarySystem": "guelga",
+          "whereItRuns": "Release QA verifier in GÜELGA (multi-viewport renders, WCAG checks, SHA-256 font/SVG checks) and CDP acquisition in PI.",
+          "whyChosen": "Catches contrast regressions, layout breakage, and accidental vector mutations automatically before release.",
+          "artifact": {
+            "label": "Case Study 03: Deterministic Release QA",
+            "path": "case-studies/03-guelga-design-system-and-context-governance.md",
+            "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/03-guelga-design-system-and-context-governance.md"
+          }
+        }
+      ]
+    }
+  ]
+}

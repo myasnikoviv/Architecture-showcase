@@ -1,0 +1,268 @@
+{
+  "slug": "property-intelligence",
+  "systemId": "pi",
+  "eyebrow": "01 / PROPERTY INTELLIGENCE",
+  "title": "Geospatial OSINT, Multimodal Vision & Zero-Network Hybrid Search Engine",
+  "scaleBadges": [
+    "255 Python Scripts",
+    "200 JSON Schemas",
+    "563 Test Files (pytest)",
+    "28 ADRs",
+    "React 19 UI"
+  ],
+  "whyHeading": "Why This Project Exists",
+  "whyParagraphs": [
+    "Property Intelligence was built to automate technical real-estate audits, neighborhood context scoring, and interior furnishing recommendations across Spanish residential listings. Standard LLM wrappers fail immediately in this domain: vision models misread wide-angle distortion, unstructured prompts mutate factual portal numbers, missing government raster data (NoData) gets hallucinated as safe, and hosted vector APIs add latency and cost during multi-item interior optimization.",
+    "The architecture replaces free-form agent loops with an 18-stage deterministic Python pipeline wrapped around strict epistemic contracts and zero-network local search."
+  ],
+  "howHeading": "How the Architecture Works",
+  "subsystems": [
+    {
+      "id": "dag",
+      "code": "SUB-01",
+      "title": "18-Stage Deterministic DAG Orchestrator (S01-S18)",
+      "summary": "Wraps every acquisition, vision, geospatial, and synthesis task in typed contracts with item-level checkpointing and automated schema repair.",
+      "bullets": [
+        "Every step inherits from StageContract (SingleActionStage or ItemSequenceStage), logging structured execution spans through StageLogger and persisting granular state inside CheckpointManager and job_ledger.",
+        "When an upstream LLM or acquisition adapter drops a field or hits rate limits, provider_recovery and contract_repairs isolate the failure, repair schema violations deterministically, and resume from the exact failed item without rerunning expensive vision calls."
+      ]
+    },
+    {
+      "id": "epistemic",
+      "code": "SUB-02",
+      "title": "6-Tier Epistemic Hierarchy & Anti-Hallucination Gate",
+      "summary": "Separates immutable observed facts from probabilistic model assessments and rejects mutated claims fail-closed.",
+      "bullets": [
+        "Every claim emitted by the pipeline carries an explicit epistemic_class (CANONICAL_FACT -> DETERMINISTIC_DERIVATION -> MODEL_OBSERVATION -> MODEL_ASSESSMENT -> RISK_HYPOTHESIS -> RECOMMENDED_ACTION), a status (OBSERVED | UNKNOWN | UNAVAILABLE), and a SHA-256 provenance reference.",
+        "During synthesis, model_metadata.web_access is locked to false. A deterministic SemanticConservationValidator rejects any output that mutates observed inputs, converts missing raster values (e.g., flood GRAY_INDEX: 999) into negative safety claims, or invents unbacked percentage lifts."
+      ]
+    },
+    {
+      "id": "hybrid-search",
+      "code": "SUB-03",
+      "title": "Zero-Network Local Hybrid Search & Beam Search Optimizer",
+      "summary": "Fuses local Tantivy BM25 and pinned ONNX Runtime E5 embeddings offline via Reciprocal Rank Fusion (k=60).",
+      "bullets": [
+        "To match room gaps against an interior product catalogue without hosted vector databases or external embedding calls, hybrid_catalogue_index.py runs two local lanes side by side: Tantivy 0.26.2 (Rust BM25) and ONNX Runtime 1.31.0 executing intfloat/multilingual-e5-small (384-d embeddings via attention-mask mean pooling and L2 normalization).",
+        "Before loading weights, the runtime resolves Hugging Face's content-addressed cache and checks exact SHA-256 digests for model.onnx, tokenizer.json, and config files. Both top-100 candidate sets merge via Reciprocal Rank Fusion (k=60) with deterministic tie-breaking, feeding a Beam Search optimizer that scores spatial fit, clearance, and palette continuity across multi-item ensembles."
+      ]
+    },
+    {
+      "id": "geospatial-cv",
+      "code": "SUB-04",
+      "title": "Geospatial OSINT, Computer Vision & Decoupled React 19 UI",
+      "summary": "Joins DuckDB Spatial over Overture Maps, official Spanish registries, Manhattan-world camera math, and pure view-model rendering.",
+      "bullets": [
+        "Spatial ingestion combines DuckDB (httpfs + spatial) queries over Overture Maps, Shapely 2.0 geometry, cost-gated Google Places/POI calls, and official Spanish data sources (Catastro, INE ADRH census statistics, IGN/MITECO environmental layers).",
+        "Visual processing runs persistent Playwright CDP harvesting, Manhattan-world wide-angle camera auto-calibration, a 2D spatial clearance linter, and layered SVG floorplan composition. A standalone React 19 + TypeScript + Vite + Tailwind v4 frontend consumes only pre-validated view-model JSON via sync-listing-data.mjs."
+      ]
+    }
+  ],
+  "githubLinks": [
+    {
+      "label": "Case Study 01: Full Architecture & 4 Mermaid Diagrams",
+      "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
+      "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
+    },
+    {
+      "label": "Contract: epistemic-forensic-proposition.schema.json",
+      "path": "contracts/epistemic-forensic-proposition.schema.json",
+      "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
+    },
+    {
+      "label": "Contract: hybrid-retrieval-bundle.schema.json",
+      "path": "contracts/hybrid-retrieval-bundle.schema.json",
+      "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
+    }
+  ],
+  "visuals": {
+    "dagStepper": {
+      "title": "Animation 4A: 18-Stage DAG Stepper & Self-Healing Loop",
+      "subtitle": "Step through the deterministic pipeline or simulate a schema drift at Layer 2 to inspect how contract_repairs and CheckpointManager recover without re-running upstream stages.",
+      "playHappyLabel": "Play Happy Path",
+      "simulateDriftLabel": "Simulate Schema Drift",
+      "resetLabel": "Reset",
+      "stages": [
+        {
+          "id": "S01-ACQ",
+          "name": "Persistent CDP & Snapshot Acquisition",
+          "contract": "live-media-manifest.json",
+          "happyStatus": "OBSERVED",
+          "driftStatus": "PASS",
+          "happyDetail": "Captures raw portal HTML and downloads binary images with SHA-256 digests.",
+          "driftDetail": "Immutable SHA-256 snapshot remains preserved on disk; zero re-scraping needed.",
+          "shaDigest": "sha256:9f2c...a81e"
+        },
+        {
+          "id": "S04-VIS",
+          "name": "Pixel Observation & Camera Calibration",
+          "contract": "photo-analysis.json (v0.3.1)",
+          "happyStatus": "OBSERVED",
+          "driftStatus": "PASS",
+          "happyDetail": "Extracts room types, spatial fixtures, and Manhattan-world lens calibration.",
+          "driftDetail": "Checkpointed item sequence artifacts remain cached inside CheckpointManager.",
+          "shaDigest": "sha256:4b19...e03d"
+        },
+        {
+          "id": "S08-GEO",
+          "name": "DuckDB Spatial, Overture & Catastro OSINT",
+          "contract": "context-manifest.json (v1.0.0)",
+          "happyStatus": "OBSERVED",
+          "driftStatus": "PASS",
+          "happyDetail": "Executes DuckDB httpfs/spatial joins and preserves flood NoData as UNKNOWN.",
+          "driftDetail": "Canonical context pack locked; downstream layers cannot alter INE or IGN facts.",
+          "shaDigest": "sha256:7d80...11c4"
+        },
+        {
+          "id": "S12-RET",
+          "name": "Local Tantivy + ONNX Hybrid Retrieval",
+          "contract": "HYBRID_CATALOGUE_INDEX_BUNDLE_V1",
+          "happyStatus": "PASS",
+          "driftStatus": "PASS",
+          "happyDetail": "Runs BM25 + multilingual-e5-small (384-d) with RRF k=60 and Beam Search.",
+          "driftDetail": "Fail-closed blob verification passes; deterministic ranking preserved.",
+          "shaDigest": "sha256:6142...18b3"
+        },
+        {
+          "id": "S16-VAL",
+          "name": "Semantic Conservation Validator & Repair",
+          "contract": "forensic-output.schema.json",
+          "happyStatus": "PASS",
+          "driftStatus": "REPAIRED",
+          "happyDetail": "0 schema errors: all claims carry evidence_refs, status, and causal_claim: false.",
+          "driftDetail": "Validator catches dropped Energy G field -> contract_repairs re-synthesizes Stage S16 only -> 0 errors.",
+          "shaDigest": "sha256:c301...77f2"
+        },
+        {
+          "id": "S18-UI",
+          "name": "Decoupled React 19 View-Model Sync",
+          "contract": "sync-listing-data.mjs",
+          "happyStatus": "PASS",
+          "driftStatus": "PASS",
+          "happyDetail": "Publishes validated JSON view-model to isolated React 19 + Tailwind v4 surface.",
+          "driftDetail": "UI stays completely shielded from invalid payloads until S16 passes with 0 errors.",
+          "shaDigest": "sha256:e5a4...901b"
+        }
+      ]
+    },
+    "rrfChart": {
+      "title": "Chart 4B: Local Hybrid Retrieval & Typed Facet Architecture",
+      "subtitle": "Illustrative normalized recall profile across typed catalogue facets comparing single-lane retrieval against Reciprocal Rank Fusion (k=60) + Beam Search.",
+      "toggleTableLabel": "Toggle Accessible Data Table",
+      "note": "Illustrative evaluation profile demonstrating why hybrid_catalogue_index.py forbids lexical_only_fallback and model_provider_fallback.",
+      "modes": [
+        {
+          "id": "bm25",
+          "label": "BM25 Only (Tantivy)",
+          "shape": "square",
+          "scores": [
+            { "facet": "Material & SKU Match", "value": 88 },
+            { "facet": "Multilingual Style Cue", "value": 46 },
+            { "facet": "Spatial Dimension Fit", "value": 74 },
+            { "facet": "Full Room Ensemble", "value": 61 }
+          ]
+        },
+        {
+          "id": "vector",
+          "label": "Dense Only (ONNX E5 384-d)",
+          "shape": "triangle",
+          "scores": [
+            { "facet": "Material & SKU Match", "value": 58 },
+            { "facet": "Multilingual Style Cue", "value": 86 },
+            { "facet": "Spatial Dimension Fit", "value": 54 },
+            { "facet": "Full Room Ensemble", "value": 66 }
+          ]
+        },
+        {
+          "id": "rrf",
+          "label": "RRF Fusion (k=60)",
+          "shape": "diamond",
+          "scores": [
+            { "facet": "Material & SKU Match", "value": 89 },
+            { "facet": "Multilingual Style Cue", "value": 85 },
+            { "facet": "Spatial Dimension Fit", "value": 81 },
+            { "facet": "Full Room Ensemble", "value": 79 }
+          ]
+        },
+        {
+          "id": "beam",
+          "label": "RRF + Beam Search Rerank",
+          "shape": "circle",
+          "scores": [
+            { "facet": "Material & SKU Match", "value": 92 },
+            { "facet": "Multilingual Style Cue", "value": 88 },
+            { "facet": "Spatial Dimension Fit", "value": 94 },
+            { "facet": "Full Room Ensemble", "value": 91 }
+          ]
+        }
+      ]
+    },
+    "epistemicInspector": {
+      "title": "Widget 4C: Epistemic Claim & Provenance Validator Demo",
+      "subtitle": "Compare an accepted snapshot-grounded proposition chain against a fail-closed rejected payload.",
+      "validTabLabel": "Accepted Proposition Chain",
+      "blockedTabLabel": "Fail-Closed Rejected Hallucination",
+      "validPayload": {
+        "verdict": "PASS (0 Semantic Errors)",
+        "reason": "All observed facts preserved, raster NoData kept as UNKNOWN, web_access=false.",
+        "tiers": [
+          {
+            "tier": "TIER 1",
+            "epistemicClass": "CANONICAL_FACT",
+            "statement": "Portal snapshot records Energy Rating = G and Flood Raster GRAY_INDEX = 999 (NoData).",
+            "status": "OBSERVED",
+            "shaRef": "sha256:snap_9f2c"
+          },
+          {
+            "tier": "TIER 2",
+            "epistemicClass": "DETERMINISTIC_DERIVATION",
+            "statement": "Haversine distance to nearest primary school entrance = 25m (Overture + Catastro).",
+            "status": "OBSERVED",
+            "shaRef": "sha256:geo_7d80"
+          },
+          {
+            "tier": "TIER 5",
+            "epistemicClass": "RISK_HYPOTHESIS",
+            "statement": "Street-facing lower-floor rooms may experience drop-off traffic peaks (08:30-09:15). Flood hazard status = UNKNOWN.",
+            "status": "UNKNOWN",
+            "shaRef": "sha256:geo_7d80"
+          },
+          {
+            "tier": "TIER 6",
+            "epistemicClass": "RECOMMENDED_ACTION",
+            "statement": "Verify acoustic glazing on-site during morning arrival and obtain municipal flood certificate (DATA_VERIFICATION).",
+            "status": "PASS",
+            "shaRef": "sha256:prop_c301"
+          }
+        ]
+      },
+      "blockedPayload": {
+        "verdict": "FAIL-CLOSED REJECT (3 Violations)",
+        "reason": "Blocked before UI render: mutated Energy fact, inverted NoData into negative claim, unbacked CTR lift.",
+        "tiers": [
+          {
+            "tier": "VIOLATION 1",
+            "epistemicClass": "FACT_MUTATION",
+            "statement": "Reported Energy Rating = UNKNOWN when canonical portal snapshot explicitly observed G.",
+            "status": "FAIL-CLOSED",
+            "shaRef": "err:FACT_OVERWRITE"
+          },
+          {
+            "tier": "VIOLATION 2",
+            "epistemicClass": "NODATA_INVERSION",
+            "statement": "Asserted 'Zero flood risk' from Flood Raster GRAY_INDEX = 999 (NoData).",
+            "status": "REJECTED",
+            "shaRef": "err:NEGATIVE_EVIDENCE"
+          },
+          {
+            "tier": "VIOLATION 3",
+            "epistemicClass": "UNBACKED_NUMERIC_LIFT",
+            "statement": "Claimed '+22% faster sale speed' without empirical causal backing.",
+            "status": "FAIL-CLOSED",
+            "shaRef": "err:CAUSAL_UNBACKED"
+          }
+        ]
+      }
+    }
+  }
+}
