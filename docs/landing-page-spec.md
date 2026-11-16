@@ -273,3 +273,69 @@ flowchart TD
 * **CTA 1:** `Explore Architecture-showcase on GitHub` -> [`https://github.com/myasnikoviv/Architecture-showcase`](https://github.com/myasnikoviv/Architecture-showcase)
 * **CTA 2:** `Explore Open-Source Agents-system Monorepo (630+ files, 174 Jest suites)` -> [`https://github.com/myasnikoviv/Agents-system`](https://github.com/myasnikoviv/Agents-system)
 * **CTA 3:** `Visit Main Developer Portfolio` -> *(Author's existing site link)*
+
+---
+
+## Section 8: Agreed Technical Architecture, Routing, i18n & Decoupled Content Specification
+
+### 8.1 Core Stack & Tooling
+* **Framework & Runtime:** `Next.js 15` (App Router, Node.js runtime) + `React 19` + `TypeScript 5`
+* **Styling & Design Tokens:** `Tailwind CSS v4` (CSS-first `@theme` tokens with semantic surfaces and zero hardcoded UI copy inside style or component files)
+* **Routing & Localization (`i18n` / `l10n`):** `next-intl` configured with `[locale]` dynamic App Router segment (launching with `en`, extension-ready for `es`, `uk`, or additional locales via a single `routing.ts` locale registry)
+* **Content Validation (Contract-First):** `Zod` (`src/content/schema.ts`) validating all JSON content dictionaries, interactive chart datasets, and system deep-dive payloads at build/render time (fail-closed)
+* **Interactive Animations, Diagrams & Charts:**
+  * `motion` (Framer Motion for 18-stage DAG stepper, `L0–L5` context gate simulator, and AST compiler pipeline animations)
+  * `lucide-react` (crisp UI & architecture diagram iconography)
+  * `shiki` (zero-runtime build-time syntax highlighting for `contracts/*.json` inspector)
+  * Custom interactive SVG / Canvas data visualizations (Cross-System DNA Map, RRF `k=60` ablation bars, Purged Walk-Forward CV fold timeline, Challenger vs. Linear ROC-AUC/Log-Loss chart, `UMAP + HDBSCAN` regime scatter plot)
+* **Deployment Mode (Universal):** Configured with `generateStaticParams()` for `[locale]` and `[slug]` routes so the exact same codebase deploys seamlessly to **Node.js / Vercel** (full SSR/RSC) or **GitHub Pages** (`output: "export"` static bundle).
+
+### 8.2 App Router Structure (`src/app/[locale]/`)
+
+```text
+src/
+├── app/
+│   ├── [locale]/
+│   │   ├── layout.tsx                    # NextIntlClientProvider, fonts, theme, sticky nav
+│   │   ├── page.tsx                      # Main Showcase Landing (Hero DNA Map, Tech Explorer, 3 System Overviews, Contract Drawer)
+│   │   ├── systems/
+│   │   │   └── [slug]/
+│   │   │       └── page.tsx              # Deep-dive pages: property-intelligence | oracle-wave-y | guelga (generateStaticParams)
+│   │   └── contracts/
+│   │       └── page.tsx                  # Dedicated full-screen JSON Schema & Policy Inspector reading ../contracts/*.json
+├── components/
+│   ├── diagrams/                         # Interactive SVG/Motion visualizers (DAG stepper, Purged CV, UMAP plot, L0-L5 simulator)
+│   ├── charts/                           # Interactive benchmark & ablation charts
+│   ├── explorer/                         # Filterable Tech & Pattern Explorer
+│   └── contracts/                        # Shiki-powered contract tabs & schema diff viewer
+├── i18n/
+│   ├── routing.ts                        # Locale list (['en']), defaultLocale, pathnames
+│   └── request.ts                        # Server loader merging modular JSON dictionaries with Zod validation
+└── content/
+    ├── schema.ts                         # Zod contracts for every dictionary, chart series, and case study payload
+    ├── loader.ts                         # Typed content loader + contract reader (reads /contracts/*.json directly)
+    └── locales/
+        └── en/
+            ├── common.json               # Navigation, UI labels, buttons, badges, footer CTAs
+            ├── hero.json                 # Hero copy, 5 verified counters, 4 shared architectural invariants
+            ├── tech-explorer.json        # 5 categories, 28+ tech pills, usage notes, target links
+            └── systems/
+                ├── property-intelligence.json  # Origin story, 4 subsystem tabs, DAG steps, RRF chart data, epistemic claims
+                ├── oracle-wave-y.json          # Origin story, 4 subsystem tabs, CV fold data, LightGBM vs Linear series, UMAP clusters
+                └── guelga.json                 # Origin story, 3 subsystem tabs, L0-L5 matrix, monorepo graph, QA scorecard
+```
+
+### 8.3 Decoupled Content & Editing Workflow
+
+```mermaid
+flowchart LR
+    EDIT["Content Editor\nEdits src/content/locales/<locale>/*.json\nor /contracts/*.json"] --> ZOD{"Zod Contract Validator\n(src/content/schema.ts)"}
+    ZOD -- "Schema Invalid" --> FAIL["Build / Typecheck Fails Closed\n(Zero Broken Charts or Missing Labels)"]
+    ZOD -- "Valid" --> NEXT["next-intl + Next.js 15 Server Components\n(Zero Hardcoded Copy in React/Tailwind)"]
+    NEXT --> VER["Vercel / Node.js SSR"]
+    NEXT --> GHP["Static Export (GitHub Pages)"]
+```
+
+* **Zero Hardcoded Strings:** All headings, subsystem tabs, chart axis labels, animation step descriptions, and GitHub links live strictly inside `src/content/locales/en/*.json` (and optional `MDX` deep-dive extensions).
+* **Single Source of Truth for Contracts:** The Contract Explorer reads directly from `/contracts/*.json` at build time so schema edits never go out of sync with the UI.
+* **Future-Ready Multi-Language Scaling:** Adding `es` or `uk` requires only duplicating `src/content/locales/en/` into `src/content/locales/<locale>/` and registering the locale code in `src/i18n/routing.ts`, with zero component or styling changes needed.
