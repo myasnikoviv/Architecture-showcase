@@ -339,3 +339,8 @@ flowchart LR
 * **Zero Hardcoded Strings:** All headings, subsystem tabs, chart axis labels, animation step descriptions, and GitHub links live strictly inside `src/content/locales/en/*.json` (and optional `MDX` deep-dive extensions).
 * **Single Source of Truth for Contracts:** The Contract Explorer reads directly from `/contracts/*.json` at build time so schema edits never go out of sync with the UI.
 * **Future-Ready Multi-Language Scaling:** Adding `es` or `uk` requires only duplicating `src/content/locales/en/` into `src/content/locales/<locale>/` and registering the locale code in `src/i18n/routing.ts`, with zero component or styling changes needed.
+
+### 8.4 Design System & Atomic Component References
+* **Local Design Skills:** [`.agents/README.md`](../.agents/README.md) (`ui-ux-pro-max` + 7 `atomic-design-*` skills)
+* **Design System Tokens & Accessibility Rules:** [`design-system/architecture-showcase/MASTER.md`](../design-system/architecture-showcase/MASTER.md)
+* **6-Level Atomic Component Catalog (`Quarks -> Pages`):** [`docs/atomic-design-system.md`](atomic-design-system.md)

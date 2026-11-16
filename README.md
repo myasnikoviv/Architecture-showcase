@@ -75,3 +75,12 @@ Representative sanitized contracts showing how invariants are enforced structura
 2. **Fail-closed contracts & provenance over prompt hoping:** Missing external data remains explicitly `UNKNOWN` or `UNAVAILABLE`; every factual claim or dataset row traces back to a cryptographic `SHA-256` digest.
 3. **Pure presentation boundaries:** React frontends consume pre-validated view-model JSON artifacts or compiled ASTs and perform zero business inference or direct external scraping in the browser.
 4. **Leakage-proof evaluation:** Whether validating retrieval facets (`Property Intelligence`), time-series ML (`Oracle`/`Wave Y`), or UI accessibility (`GÜELGA`), evaluation harnesses run offline on pinned snapshots with explicit embargo/ablation controls.
+
+---
+
+## Companion Web Showcase Blueprint & Atomic Design System
+
+* **[Landing Page Structure, Visual Specs & English Copy](docs/landing-page-spec.md)** — Section-by-section blueprint for the `Next.js 15 + Tailwind CSS v4 + next-intl + Zod` interactive companion site.
+* **[Atomic Design System (`Quarks -> Pages`)](docs/atomic-design-system.md)** — 6-level component & token architecture tailored to the showcase's interactive visualizations and decoupled JSON content.
+* **[Design System Master Rules (`MASTER.md`)](design-system/architecture-showcase/MASTER.md)** — Visual direction, typography (`JetBrains Mono` + `IBM Plex Sans`), dark-mode contrast tokens, and chart accessibility rules.
+* **[Local Design Skills Registry (`.agents/`)](.agents/README.md)** — Packaged local `ui-ux-pro-max` and 7 `atomic-design-*` skills.
