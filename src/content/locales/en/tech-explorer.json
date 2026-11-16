@@ -1,10 +1,55 @@
 {
-  "eyebrow": "RECRUITER SKILL MATCHER",
-  "heading": "Pick a Skill From Your Job Description",
-  "intro": "Click any technology below to inspect the live data flow, see which system runs it, and jump straight to the matching GitHub diagram.",
+  "eyebrow": "TECHNICAL SKILLS BY CATEGORY",
+  "heading": "Core Skills Used Across Both Systems",
+  "intro": "Browse by engineering category or click any technology pill to inspect its live data flow, plain-English role, and direct GitHub source links.",
+  "categories": [
+    {
+      "id": "all",
+      "title": "All Skills",
+      "description": "Every core AI, ML, database, backend, and frontend technology demonstrated in the two projects.",
+      "icon": "layers",
+      "skillIds": ["langgraph", "rag-vectors", "lightgbm", "umap-hdbscan", "data-lakehouse", "python-fastapi", "ts-react-flow"]
+    },
+    {
+      "id": "ml-training",
+      "title": "Model Training & ML",
+      "description": "Gradient-boosted trees, dimensionality reduction, density clustering, and leakage-free time-series validation.",
+      "icon": "brain",
+      "skillIds": ["lightgbm", "umap-hdbscan"]
+    },
+    {
+      "id": "databases",
+      "title": "Vector & Specialized Databases",
+      "description": "Local ONNX vector indexes, Rust Tantivy BM25 search, DuckDB geospatial SQL, Parquet, PostgreSQL, and Redis.",
+      "icon": "database",
+      "skillIds": ["rag-vectors", "data-lakehouse"]
+    },
+    {
+      "id": "agentic-llm",
+      "title": "Agentic Orchestration & LLM",
+      "description": "Multi-step state graphs, structured tool calling, vision extraction, and schema repair loops.",
+      "icon": "workflow",
+      "skillIds": ["langgraph"]
+    },
+    {
+      "id": "backend-pipelines",
+      "title": "Backend & Data Pipelines",
+      "description": "FastAPI services, Pydantic/JSON Schema contracts, checkpoint recovery, and automated verification.",
+      "icon": "server",
+      "skillIds": ["python-fastapi"]
+    },
+    {
+      "id": "frontend-viz",
+      "title": "Frontend & Visual Compilers",
+      "description": "React 19, TypeScript 5, visual node-graph editors, and deterministic AST compilers.",
+      "icon": "layoutGrid",
+      "skillIds": ["ts-react-flow"]
+    }
+  ],
   "pills": [
     {
       "id": "langgraph",
+      "categoryId": "agentic-llm",
       "label": "LangGraph & LangChain",
       "projectLabel": "Agents-system + Property Intelligence",
       "systemId": "pi",
@@ -30,14 +75,15 @@
     },
     {
       "id": "rag-vectors",
+      "categoryId": "databases",
       "label": "RAG & Vector Embeddings",
       "projectLabel": "Property Intelligence",
       "systemId": "pi",
       "plainEnglishSummary": "Combines exact keyword search (Tantivy BM25) with semantic vector search (local ONNX Multilingual-E5 384-d embeddings) inside Python with zero external vector database fees.",
       "flowNodes": [
         { "step": "01", "title": "Typed Query", "subtitle": "Material & spatial cues", "icon": "search" },
-        { "step": "02", "title": "Tantivy BM25", "subtitle": "Exact keyword top-100", "icon": "layers" },
-        { "step": "03", "title": "ONNX E5 Vectors", "subtitle": "384-d cosine top-100", "icon": "cpu" },
+        { "step": "02", "title": "Tantivy BM25", "subtitle": "Exact keyword ranking", "icon": "layers" },
+        { "step": "03", "title": "ONNX E5 Vectors", "subtitle": "384-d cosine similarity", "icon": "cpu" },
         { "step": "04", "title": "RRF + Beam Search", "subtitle": "Ranked room matches", "icon": "sparkles" }
       ],
       "githubLinks": [
@@ -55,13 +101,14 @@
     },
     {
       "id": "lightgbm",
+      "categoryId": "ml-training",
       "label": "LightGBM & Scikit-Learn",
       "projectLabel": "Trade Bot (Oracle ML)",
       "systemId": "oracle",
       "plainEnglishSummary": "Trains gradient-boosted trees (LightGBM) and benchmarks them against calibrated Scikit-Learn linear models using strict time-split validation so future data never leaks into training.",
       "flowNodes": [
-        { "step": "01", "title": "30+ Features", "subtitle": "Parquet & PostgreSQL", "icon": "database" },
-        { "step": "02", "title": "Purged Time Split", "subtitle": "4-hour leakage embargo", "icon": "sliders" },
+        { "step": "01", "title": "Engineered Features", "subtitle": "Parquet & PostgreSQL", "icon": "database" },
+        { "step": "02", "title": "Purged Time Split", "subtitle": "Leakage embargo gap", "icon": "sliders" },
         { "step": "03", "title": "LightGBM vs Linear", "subtitle": "Challenger benchmark", "icon": "brain" },
         { "step": "04", "title": "AUC & Calibration", "subtitle": "Out-of-sample check", "icon": "shieldCheck" }
       ],
@@ -75,10 +122,11 @@
     },
     {
       "id": "umap-hdbscan",
+      "categoryId": "ml-training",
       "label": "UMAP & HDBSCAN Clustering",
       "projectLabel": "Trade Bot (Wave Y)",
       "systemId": "oracle",
-      "plainEnglishSummary": "Finds hidden market patterns automatically across 30+ price and order-flow signals using UMAP dimensionality reduction and HDBSCAN density clustering.",
+      "plainEnglishSummary": "Finds hidden market patterns automatically across multi-horizon price and order-flow signals using UMAP dimensionality reduction and HDBSCAN density clustering.",
       "flowNodes": [
         { "step": "01", "title": "In-Sample Scaling", "subtitle": "StandardScaler fit", "icon": "sliders" },
         { "step": "02", "title": "UMAP Projection", "subtitle": "Non-linear 2D manifold", "icon": "layers" },
@@ -95,14 +143,15 @@
     },
     {
       "id": "python-fastapi",
+      "categoryId": "backend-pipelines",
       "label": "Python, FastAPI & Schemas",
       "projectLabel": "Property Intelligence + Agents-system",
       "systemId": "pi",
-      "plainEnglishSummary": "Powers high-reliability backend pipelines with Pydantic/JSON Schema contracts, checkpoint recovery, and 563 automated pytest checks.",
+      "plainEnglishSummary": "Powers high-reliability backend pipelines with Pydantic/JSON Schema contracts, checkpoint recovery, and automated pytest verification suites.",
       "flowNodes": [
         { "step": "01", "title": "FastAPI / CLI Entry", "subtitle": "Typed request contract", "icon": "server" },
-        { "step": "02", "title": "Stage Orchestrator", "subtitle": "S01-S18 with checkpoints", "icon": "workflow" },
-        { "step": "03", "title": "Schema Validator", "subtitle": "200 JSON Schemas", "icon": "shieldCheck" },
+        { "step": "02", "title": "Stage Orchestrator", "subtitle": "Resumable checkpoints", "icon": "workflow" },
+        { "step": "03", "title": "Schema Validator", "subtitle": "Strict JSON contracts", "icon": "shieldCheck" },
         { "step": "04", "title": "JSON View-Model", "subtitle": "SHA-256 verified output", "icon": "layoutGrid" }
       ],
       "githubLinks": [
@@ -120,6 +169,7 @@
     },
     {
       "id": "data-lakehouse",
+      "categoryId": "databases",
       "label": "DuckDB, Parquet, PostgreSQL & Redis",
       "projectLabel": "Both Systems",
       "systemId": "oracle",
@@ -145,6 +195,7 @@
     },
     {
       "id": "ts-react-flow",
+      "categoryId": "frontend-viz",
       "label": "TypeScript, React & Visual DAGs",
       "projectLabel": "Trade Bot + Property Intelligence",
       "systemId": "oracle",

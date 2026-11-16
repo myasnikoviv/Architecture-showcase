@@ -1,6 +1,6 @@
 import React from "react";
-import { Heading, Icon, Text } from "@/components/atoms";
-import { MetricStatCard } from "@/components/molecules";
+import { clsx } from "clsx";
+import { Heading, Icon, SurfaceCard, Text } from "@/components/atoms";
 import type { HeroContent } from "@/content/schema";
 
 export interface HeroArchitectureSplitProps {
@@ -45,16 +45,37 @@ export function HeroArchitectureSplit({ hero }: HeroArchitectureSplitProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
-        {hero.metrics.map((metric) => (
-          <MetricStatCard
-            key={metric.id}
-            value={metric.value}
-            label={metric.label}
-            detail={metric.detail}
-            systemId={metric.systemId}
-          />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+        {hero.pillars.map((pillar) => {
+          const isPi = pillar.systemId === "pi";
+          return (
+            <SurfaceCard
+              key={pillar.id}
+              accent={pillar.systemId}
+              padding="md"
+              className="flex flex-col gap-2.5 min-w-0"
+            >
+              <div className="flex items-center gap-2.5">
+                <span
+                  className={clsx(
+                    "h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
+                    isPi
+                      ? "bg-system-pi/10 text-system-pi"
+                      : "bg-system-oracle/10 text-system-oracle"
+                  )}
+                >
+                  <Icon name={pillar.icon} size={16} />
+                </span>
+                <span className="font-display text-sm font-bold text-fg leading-snug">
+                  {pillar.title}
+                </span>
+              </div>
+              <Text variant="muted" className="text-xs sm:text-sm leading-relaxed">
+                {pillar.detail}
+              </Text>
+            </SurfaceCard>
+          );
+        })}
       </div>
     </section>
   );

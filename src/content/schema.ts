@@ -117,27 +117,39 @@ export const HeroContentSchema = z.object({
     github: z.string().min(1),
     githubUrl: z.string().url(),
   }),
-  metrics: z
+  pillars: z
     .array(
       z.object({
         id: z.string().min(1),
-        value: z.string().min(1),
-        label: z.string().min(1),
+        title: z.string().min(1),
         detail: z.string().min(1),
+        icon: IconKeySchema,
         systemId: SystemIdSchema,
       })
     )
-    .length(4),
+    .length(3),
 });
 
 export const TechExplorerContentSchema = z.object({
   eyebrow: z.string().min(1),
   heading: z.string().min(1),
   intro: z.string().min(1),
+  categories: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        title: z.string().min(1),
+        description: z.string().min(1),
+        icon: IconKeySchema,
+        skillIds: z.array(z.string().min(1)).min(1),
+      })
+    )
+    .min(4),
   pills: z
     .array(
       z.object({
         id: z.string().min(1),
+        categoryId: z.string().min(1),
         label: z.string().min(1),
         projectLabel: z.string().min(1),
         systemId: SystemIdSchema,

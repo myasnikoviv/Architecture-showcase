@@ -19,6 +19,7 @@ import {
   InteractiveDiagramNode,
   SlideOverExplainerDrawer,
 } from "@/components/molecules";
+import { OracleAgenticMotionExplainer } from "./OracleAgenticMotionExplainer";
 import type { OracleWaveYContent } from "@/content/schema";
 
 export interface OracleWaveYSectionProps {
@@ -151,16 +152,19 @@ export function OracleWaveYSection({
           </div>
         </div>
 
+        {/* Animated Storyboard Illustration: How Oracle ML & Agentic Control Work */}
+        <OracleAgenticMotionExplainer />
+
         {/* Interactive 5-Node Architecture Flow Diagram */}
         <div className="rounded-2xl border border-border-subtle bg-surface-1 p-4 sm:p-6 flex flex-col gap-4">
           <Text variant="muted" className="text-xs sm:text-sm font-medium">
             {content.diagramHint}
           </Text>
 
-          <div className="grid grid-cols-1 lg:grid-cols-9 gap-2 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_20px_minmax(0,1fr)_20px_minmax(0,1fr)_20px_minmax(0,1fr)_20px_minmax(0,1fr)] gap-2 items-center">
             {content.nodes.map((node, idx) => (
               <React.Fragment key={node.id}>
-                <div className="lg:col-span-1 min-w-0">
+                <div className="min-w-0">
                   <InteractiveDiagramNode
                     step={node.step}
                     title={node.title}
@@ -172,18 +176,18 @@ export function OracleWaveYSection({
                   />
                 </div>
                 {idx < content.nodes.length - 1 && (
-                  <div className="hidden lg:flex items-center justify-center" aria-hidden="true">
-                    <svg viewBox="0 0 44 16" className="w-full h-4">
+                  <div className="hidden lg:flex w-5 items-center justify-center" aria-hidden="true">
+                    <svg viewBox="0 0 24 16" className="w-5 h-4">
                       <line
                         x1="0"
                         y1="8"
-                        x2="36"
+                        x2="18"
                         y2="8"
                         stroke="var(--color-system-oracle)"
-                        strokeWidth="2.5"
+                        strokeWidth="2"
                         className="animate-flow-dash"
                       />
-                      <polygon points="34,3 42,8 34,13" fill="var(--color-system-oracle)" />
+                      <polygon points="16,4 23,8 16,12" fill="var(--color-system-oracle)" />
                     </svg>
                   </div>
                 )}

@@ -3,11 +3,11 @@
   "systemId": "pi",
   "eyebrow": "PROJECT 01 · AI PIPELINE & LOCAL HYBRID RAG",
   "title": "Property Intelligence: Anti-Hallucination AI & Local Vector Search",
-  "plainPitch": "An automated 18-step AI pipeline that audits real-estate listings, analyzes room photos, matches interior furniture using local Vector + Keyword RAG, and blocks LLM hallucinations with 200 strict JSON schemas.",
+  "plainPitch": "An automated multi-stage AI pipeline that audits real-estate listings, analyzes room photos, matches interior furniture using local Vector + Keyword RAG, and blocks LLM hallucinations with strict JSON contracts.",
   "scaleBadges": [
-    "255 Python Scripts",
-    "200 JSON Schemas",
-    "563 Pytest Suites",
+    "Geospatial OSINT + DuckDB",
+    "Strict JSON Schema Repair",
+    "Automated Pytest Verification",
     "ONNX + Tantivy RAG",
     "React 19 UI"
   ],
@@ -76,9 +76,9 @@
       "id": "validator-gate",
       "step": "STAGE 4",
       "title": "Hallucination Gate & Repair",
-      "roleBadge": "200 Schemas",
+      "roleBadge": "Schema Guard",
       "icon": "shieldCheck",
-      "plainSummary": "Checks every AI claim against 200 JSON schemas, auto-repairs broken outputs, and resumes from checkpoints without re-running costly steps.",
+      "plainSummary": "Checks every AI claim against strict JSON schemas, auto-repairs broken outputs, and resumes from checkpoints without re-running costly steps.",
       "visualType": "dag-stepper",
       "drawerEyebrow": "18-Stage Checkpointed Orchestrator & Semantic Validator",
       "drawerBullets": [
@@ -182,7 +182,7 @@
           "contract": "forensic-output.schema",
           "happyStatus": "PASS",
           "driftStatus": "REPAIRED",
-          "happyDetail": "All 200 schema rules pass cleanly.",
+          "happyDetail": "All schema rules pass cleanly.",
           "driftDetail": "Caught missing Energy field -> auto-repaired S16 only.",
           "shaDigest": "sha256:c301...77f2"
         },

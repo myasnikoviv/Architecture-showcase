@@ -10,7 +10,7 @@
     "UMAP + HDBSCAN",
     "DuckDB + Parquet + Postgres + Redis",
     "React Flow DAG Compiler",
-    "100+ ML & Research Tools"
+    "Deterministic Replay Harness"
   ],
   "diagramHint": "Click any block in the ML & execution pipeline below to inspect its interactive visualizer:",
   "nodes": [

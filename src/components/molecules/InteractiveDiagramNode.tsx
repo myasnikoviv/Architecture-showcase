@@ -40,13 +40,13 @@ export function InteractiveDiagramNode({
       onClick={onSelect}
       aria-pressed={isSelected}
       className={clsx(
-        "w-full rounded-2xl border p-4 text-left transition-all duration-200 cursor-pointer flex flex-col gap-3",
+        "w-full min-w-0 overflow-hidden rounded-2xl border p-4 text-left transition-all duration-200 cursor-pointer flex flex-col gap-3",
         isSelected
           ? activeCardMap[systemAccent]
           : "border-border-strong bg-card shadow-xs hover:border-fg-muted hover:shadow-sm"
       )}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
         <span
           className={clsx(
             "h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200",
@@ -57,7 +57,11 @@ export function InteractiveDiagramNode({
         >
           <Icon name={icon} size={18} />
         </span>
-        <StatusPill label={roleBadge} tone={isSelected ? systemAccent : "neutral"} />
+        <StatusPill
+          label={roleBadge}
+          tone={isSelected ? systemAccent : "neutral"}
+          className="text-[11px] px-2 py-0.5 max-w-full truncate"
+        />
       </div>
 
       <div className="flex flex-col gap-1">

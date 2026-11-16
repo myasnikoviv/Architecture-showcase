@@ -1,40 +1,33 @@
 {
   "eyebrow": "AI, RAG & MACHINE LEARNING ARCHITECTURE SHOWCASE",
   "headline": "How I Build Production AI, RAG & ML Systems",
-  "subheadline": "Built for recruiters and engineering leads: click any skill from your job description below to see an animated diagram of how it works inside my projects, with direct links to GitHub.",
+  "subheadline": "Explore the skills, data pipelines, and visual system flows behind two production-grade R&D projects, with direct links to inspect the contracts and documentation on GitHub.",
   "ctas": {
-    "primary": "Match Skills to Architecture",
-    "secondary": "Explore Project Diagrams",
+    "primary": "Browse Skills by Category",
+    "secondary": "Watch System Animations",
     "github": "Open GitHub Showcase",
     "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/README.md"
   },
-  "metrics": [
+  "pillars": [
     {
-      "id": "schemas",
-      "value": "200+",
-      "label": "JSON Output Contracts",
-      "detail": "Prevents LLM hallucinations & silent schema drift",
+      "id": "contracts",
+      "title": "Strict Data Contracts & Repair",
+      "detail": "Every LLM output and vision extraction is validated against typed schemas so ungrounded claims are blocked before reaching users.",
+      "icon": "shieldCheck",
       "systemId": "pi"
     },
     {
-      "id": "tests",
-      "value": "563",
-      "label": "Automated Pytest Suites",
-      "detail": "Verifies every pipeline stage and spatial rule",
+      "id": "hybrid-rag",
+      "title": "Local-First Hybrid Search & Geospatial",
+      "detail": "Combines offline ONNX vector embeddings, Rust Tantivy BM25 keyword search, and DuckDB geospatial joins with zero cloud lock-in.",
+      "icon": "database",
       "systemId": "pi"
     },
     {
-      "id": "rag",
-      "value": "384-d",
-      "label": "Local Hybrid Vector RAG",
-      "detail": "Offline ONNX embeddings + Rust Tantivy BM25 search",
-      "systemId": "pi"
-    },
-    {
-      "id": "ml",
-      "value": "30+",
-      "label": "Engineered ML Features",
-      "detail": "LightGBM + UMAP/HDBSCAN with zero data leakage",
+      "id": "leakage-free",
+      "title": "Agentic Control & Deterministic Replay",
+      "detail": "Time-embargoed ML training, explicit tool-calling risk gates, and bit-for-bit replay harnesses so every automated decision is auditable.",
+      "icon": "workflow",
       "systemId": "oracle"
     }
   ]
