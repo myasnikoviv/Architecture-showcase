@@ -11,7 +11,6 @@ export interface MetricNumberProps {
 const accentTextClasses: Record<SystemAccentKey, string> = {
   pi: "text-system-pi",
   oracle: "text-system-oracle",
-  guelga: "text-system-guelga",
 };
 
 export function MetricNumber({
@@ -22,7 +21,7 @@ export function MetricNumber({
   return (
     <span
       className={clsx(
-        "font-mono text-3xl sm:text-4xl font-semibold tabular-nums tracking-tight",
+        "font-display text-3xl sm:text-4xl font-extrabold tabular-nums tracking-tight",
         accentTextClasses[accent],
         className
       )}

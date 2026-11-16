@@ -9,15 +9,14 @@ export interface SurfaceCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const accentBorderClasses: Record<"none" | SystemAccentKey, string> = {
-  none: "border-border-strong",
-  pi: "border-border-strong border-t-2 border-t-system-pi",
-  oracle: "border-border-strong border-t-2 border-t-system-oracle",
-  guelga: "border-border-strong border-t-2 border-t-system-guelga",
+  none: "border-border-subtle",
+  pi: "border-border-subtle border-t-4 border-t-system-pi",
+  oracle: "border-border-subtle border-t-4 border-t-system-oracle",
 };
 
 const paddingClasses = {
   sm: "p-4",
-  md: "p-6",
+  md: "p-5 sm:p-6",
   lg: "p-6 sm:p-8",
 };
 
@@ -32,8 +31,10 @@ export function SurfaceCard({
   return (
     <div
       className={clsx(
-        "rounded-xl border transition-colors duration-200",
-        elevation === "elevated" ? "bg-surface-1" : "bg-card",
+        "rounded-2xl border transition-shadow duration-200",
+        elevation === "elevated"
+          ? "bg-surface-1 border-border-subtle"
+          : "bg-card shadow-sm",
         accentBorderClasses[accent],
         paddingClasses[padding],
         className

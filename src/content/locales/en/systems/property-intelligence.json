@@ -1,263 +1,295 @@
 {
   "slug": "property-intelligence",
   "systemId": "pi",
-  "eyebrow": "01 / PROPERTY INTELLIGENCE",
-  "title": "Geospatial OSINT, Multimodal Vision & Zero-Network Hybrid Search Engine",
+  "eyebrow": "PROJECT 01 · AI PIPELINE & LOCAL HYBRID RAG",
+  "title": "Property Intelligence: Anti-Hallucination AI & Local Vector Search",
+  "plainPitch": "An automated 18-step AI pipeline that audits real-estate listings, analyzes room photos, matches interior furniture using local Vector + Keyword RAG, and blocks LLM hallucinations with 200 strict JSON schemas.",
   "scaleBadges": [
     "255 Python Scripts",
     "200 JSON Schemas",
-    "563 Test Files (pytest)",
-    "28 ADRs",
+    "563 Pytest Suites",
+    "ONNX + Tantivy RAG",
     "React 19 UI"
   ],
-  "whyHeading": "Why This Project Exists",
-  "whyParagraphs": [
-    "Property Intelligence was built to automate technical real-estate audits, neighborhood context scoring, and interior furnishing recommendations across Spanish residential listings. Standard LLM wrappers fail immediately in this domain: vision models misread wide-angle distortion, unstructured prompts mutate factual portal numbers, missing government raster data (NoData) gets hallucinated as safe, and hosted vector APIs add latency and cost during multi-item interior optimization.",
-    "The architecture replaces free-form agent loops with an 18-stage deterministic Python pipeline wrapped around strict epistemic contracts and zero-network local search."
-  ],
-  "howHeading": "How the Architecture Works",
-  "subsystems": [
+  "diagramHint": "Click any block in the architecture diagram below to inspect how it works and view live visual evidence:",
+  "nodes": [
     {
-      "id": "dag",
-      "code": "SUB-01",
-      "title": "18-Stage Deterministic DAG Orchestrator (S01-S18)",
-      "summary": "Wraps every acquisition, vision, geospatial, and synthesis task in typed contracts with item-level checkpointing and automated schema repair.",
-      "bullets": [
-        "Every step inherits from StageContract (SingleActionStage or ItemSequenceStage), logging structured execution spans through StageLogger and persisting granular state inside CheckpointManager and job_ledger.",
-        "When an upstream LLM or acquisition adapter drops a field or hits rate limits, provider_recovery and contract_repairs isolate the failure, repair schema violations deterministically, and resume from the exact failed item without rerunning expensive vision calls."
-      ]
+      "id": "geo-ingest",
+      "step": "STAGE 1",
+      "title": "Data & Maps Ingestion",
+      "roleBadge": "DuckDB + Maps",
+      "icon": "database",
+      "plainSummary": "Pulls verified location facts from Overture Maps, Google Places, and official Spanish registries using DuckDB Spatial.",
+      "visualType": "epistemic-guard",
+      "drawerEyebrow": "Geospatial OSINT & Data Pinning",
+      "drawerBullets": [
+        "Runs SQL geospatial joins directly on Overture Maps via DuckDB (httpfs + spatial) and Shapely 2.0 geometry buffers.",
+        "Collects portal photos and raw HTML via persistent Playwright Chrome CDP and signs every binary asset with a SHA-256 hash.",
+        "Missing official data (like flood raster NoData cells) is strictly stored as UNKNOWN rather than guessed."
+      ],
+      "githubSectionLink": {
+        "label": "View Geospatial Pipeline Diagram on GitHub",
+        "path": "case-studies/01-...md#5-diagram-4-geospatial-osint-computer-vision--decoupled-react-19-ui",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#5-diagram-4-geospatial-osint-computer-vision--decoupled-react-19-ui"
+      }
     },
     {
-      "id": "epistemic",
-      "code": "SUB-02",
-      "title": "6-Tier Epistemic Hierarchy & Anti-Hallucination Gate",
-      "summary": "Separates immutable observed facts from probabilistic model assessments and rejects mutated claims fail-closed.",
-      "bullets": [
-        "Every claim emitted by the pipeline carries an explicit epistemic_class (CANONICAL_FACT -> DETERMINISTIC_DERIVATION -> MODEL_OBSERVATION -> MODEL_ASSESSMENT -> RISK_HYPOTHESIS -> RECOMMENDED_ACTION), a status (OBSERVED | UNKNOWN | UNAVAILABLE), and a SHA-256 provenance reference.",
-        "During synthesis, model_metadata.web_access is locked to false. A deterministic SemanticConservationValidator rejects any output that mutates observed inputs, converts missing raster values (e.g., flood GRAY_INDEX: 999) into negative safety claims, or invents unbacked percentage lifts."
-      ]
+      "id": "vision-math",
+      "step": "STAGE 2",
+      "title": "Vision AI & Camera Math",
+      "roleBadge": "Gemini Vision",
+      "icon": "eye",
+      "plainSummary": "Detects room layout and staging gaps with Gemini Vision while deterministic Python math corrects wide-angle lens distortion.",
+      "visualType": "dag-stepper",
+      "drawerEyebrow": "Multimodal Computer Vision + Geometry",
+      "drawerBullets": [
+        "Separates pixel observations (room type, lighting, fixtures) from deterministic camera calibration so the LLM never invents room measurements.",
+        "Includes Manhattan-world camera auto-calibration, a 2D spatial clearance linter, and layered SVG floorplan generation."
+      ],
+      "githubSectionLink": {
+        "label": "View Vision & SVG Projection Diagram on GitHub",
+        "path": "case-studies/01-...md#5-diagram-4-geospatial-osint-computer-vision--decoupled-react-19-ui",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#5-diagram-4-geospatial-osint-computer-vision--decoupled-react-19-ui"
+      }
     },
     {
-      "id": "hybrid-search",
-      "code": "SUB-03",
-      "title": "Zero-Network Local Hybrid Search & Beam Search Optimizer",
-      "summary": "Fuses local Tantivy BM25 and pinned ONNX Runtime E5 embeddings offline via Reciprocal Rank Fusion (k=60).",
-      "bullets": [
-        "To match room gaps against an interior product catalogue without hosted vector databases or external embedding calls, hybrid_catalogue_index.py runs two local lanes side by side: Tantivy 0.26.2 (Rust BM25) and ONNX Runtime 1.31.0 executing intfloat/multilingual-e5-small (384-d embeddings via attention-mask mean pooling and L2 normalization).",
-        "Before loading weights, the runtime resolves Hugging Face's content-addressed cache and checks exact SHA-256 digests for model.onnx, tokenizer.json, and config files. Both top-100 candidate sets merge via Reciprocal Rank Fusion (k=60) with deterministic tie-breaking, feeding a Beam Search optimizer that scores spatial fit, clearance, and palette continuity across multi-item ensembles."
-      ]
+      "id": "hybrid-rag",
+      "step": "STAGE 3",
+      "title": "Local Vector + BM25 RAG",
+      "roleBadge": "Tantivy + ONNX",
+      "icon": "search",
+      "plainSummary": "Matches interior products offline by combining Tantivy BM25 keyword search with local ONNX 384-d embeddings and Beam Search.",
+      "visualType": "rrf-chart",
+      "drawerEyebrow": "Zero-Network Hybrid Retrieval Engine",
+      "drawerBullets": [
+        "Lane 1: Tantivy 0.26.2 (Rust BM25) finds exact matches on materials, dimensions, and SKU attributes.",
+        "Lane 2: ONNX Runtime 1.31.0 encodes text locally with intfloat/multilingual-e5-small (384-d mean-pooled, L2-normalized vectors) after checking SHA-256 model file hashes.",
+        "Reciprocal Rank Fusion (k=60) merges both top-100 lists and feeds a Beam Search optimizer for compatible room ensembles."
+      ],
+      "githubSectionLink": {
+        "label": "View Hybrid RAG Diagram & Schema on GitHub",
+        "path": "case-studies/01-...md#4-diagram-3-zero-network-local-hybrid-retrieval--ensemble-optimizer",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#4-diagram-3-zero-network-local-hybrid-retrieval--ensemble-optimizer"
+      }
     },
     {
-      "id": "geospatial-cv",
-      "code": "SUB-04",
-      "title": "Geospatial OSINT, Computer Vision & Decoupled React 19 UI",
-      "summary": "Joins DuckDB Spatial over Overture Maps, official Spanish registries, Manhattan-world camera math, and pure view-model rendering.",
-      "bullets": [
-        "Spatial ingestion combines DuckDB (httpfs + spatial) queries over Overture Maps, Shapely 2.0 geometry, cost-gated Google Places/POI calls, and official Spanish data sources (Catastro, INE ADRH census statistics, IGN/MITECO environmental layers).",
-        "Visual processing runs persistent Playwright CDP harvesting, Manhattan-world wide-angle camera auto-calibration, a 2D spatial clearance linter, and layered SVG floorplan composition. A standalone React 19 + TypeScript + Vite + Tailwind v4 frontend consumes only pre-validated view-model JSON via sync-listing-data.mjs."
-      ]
+      "id": "validator-gate",
+      "step": "STAGE 4",
+      "title": "Hallucination Gate & Repair",
+      "roleBadge": "200 Schemas",
+      "icon": "shieldCheck",
+      "plainSummary": "Checks every AI claim against 200 JSON schemas, auto-repairs broken outputs, and resumes from checkpoints without re-running costly steps.",
+      "visualType": "dag-stepper",
+      "drawerEyebrow": "18-Stage Checkpointed Orchestrator & Semantic Validator",
+      "drawerBullets": [
+        "Built with SingleActionStage, ItemSequenceStage, CheckpointManager, and StageLogger span tracing across stages S01 to S18.",
+        "Locks synthesis models to web_access: false and runs SemanticConservationValidator so AI cannot overwrite observed facts or invent lift percentages."
+      ],
+      "githubSectionLink": {
+        "label": "View Epistemic Validator Diagram on GitHub",
+        "path": "case-studies/01-...md#3-diagram-2-6-tier-epistemic-hierarchy--semantic-conservation-gate",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#3-diagram-2-6-tier-epistemic-hierarchy--semantic-conservation-gate"
+      }
+    },
+    {
+      "id": "react-ui",
+      "step": "STAGE 5",
+      "title": "Clean React 19 UI",
+      "roleBadge": "View-Model Only",
+      "icon": "layoutGrid",
+      "plainSummary": "Renders the audited report and SVG floorplans inside an isolated React 19 + Tailwind app that only accepts validated JSON.",
+      "visualType": "epistemic-guard",
+      "drawerEyebrow": "Decoupled React 19 + TypeScript Presentation Layer",
+      "drawerBullets": [
+        "Python remains the single analytical source of truth; the React 19 frontend has zero direct scraping or LLM logic.",
+        "A build bridge (sync-listing-data.mjs) verifies schema compliance before staging JSON view-models for static hosting."
+      ],
+      "githubSectionLink": {
+        "label": "Inspect Proposition Output Schema on GitHub",
+        "path": "contracts/epistemic-forensic-proposition.schema.json",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
+      }
     }
   ],
   "githubLinks": [
     {
-      "label": "Case Study 01: Full Architecture & 4 Mermaid Diagrams",
+      "label": "Full Property Intelligence Case Study (4 Diagrams)",
       "path": "case-studies/01-property-intelligence-geospatial-ai-pipeline.md",
       "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md"
     },
     {
-      "label": "Contract: epistemic-forensic-proposition.schema.json",
+      "label": "Epistemic Output JSON Schema",
       "path": "contracts/epistemic-forensic-proposition.schema.json",
       "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
     },
     {
-      "label": "Contract: hybrid-retrieval-bundle.schema.json",
+      "label": "Local Hybrid Search (Tantivy + ONNX) Schema",
       "path": "contracts/hybrid-retrieval-bundle.schema.json",
       "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
     }
   ],
   "visuals": {
     "dagStepper": {
-      "title": "Animation 4A: 18-Stage DAG Stepper & Self-Healing Loop",
-      "subtitle": "Step through the deterministic pipeline or simulate a schema drift at Layer 2 to inspect how contract_repairs and CheckpointManager recover without re-running upstream stages.",
-      "playHappyLabel": "Play Happy Path",
-      "simulateDriftLabel": "Simulate Schema Drift",
+      "title": "Pipeline Auto-Repair Simulator",
+      "subtitle": "Watch how the pipeline runs normally vs. how it catches and repairs a broken LLM stage without redoing earlier work.",
+      "playHappyLabel": "Run Normal Pipeline",
+      "simulateDriftLabel": "Simulate LLM Error & Auto-Repair",
       "resetLabel": "Reset",
       "stages": [
         {
-          "id": "S01-ACQ",
-          "name": "Persistent CDP & Snapshot Acquisition",
+          "id": "S01",
+          "name": "Snapshot Capture",
           "contract": "live-media-manifest.json",
           "happyStatus": "OBSERVED",
           "driftStatus": "PASS",
-          "happyDetail": "Captures raw portal HTML and downloads binary images with SHA-256 digests.",
-          "driftDetail": "Immutable SHA-256 snapshot remains preserved on disk; zero re-scraping needed.",
+          "happyDetail": "Portal photos & facts saved with SHA-256 hashes.",
+          "driftDetail": "Original snapshot stays locked on disk.",
           "shaDigest": "sha256:9f2c...a81e"
         },
         {
-          "id": "S04-VIS",
-          "name": "Pixel Observation & Camera Calibration",
-          "contract": "photo-analysis.json (v0.3.1)",
+          "id": "S04",
+          "name": "Vision Analysis",
+          "contract": "photo-analysis.json",
           "happyStatus": "OBSERVED",
           "driftStatus": "PASS",
-          "happyDetail": "Extracts room types, spatial fixtures, and Manhattan-world lens calibration.",
-          "driftDetail": "Checkpointed item sequence artifacts remain cached inside CheckpointManager.",
+          "happyDetail": "Rooms & fixtures detected via Gemini Vision.",
+          "driftDetail": "Cached inside CheckpointManager (not re-run).",
           "shaDigest": "sha256:4b19...e03d"
         },
         {
-          "id": "S08-GEO",
-          "name": "DuckDB Spatial, Overture & Catastro OSINT",
-          "contract": "context-manifest.json (v1.0.0)",
+          "id": "S08",
+          "name": "DuckDB Geo Join",
+          "contract": "context-manifest.json",
           "happyStatus": "OBSERVED",
           "driftStatus": "PASS",
-          "happyDetail": "Executes DuckDB httpfs/spatial joins and preserves flood NoData as UNKNOWN.",
-          "driftDetail": "Canonical context pack locked; downstream layers cannot alter INE or IGN facts.",
+          "happyDetail": "Overture Maps & Catastro joined safely.",
+          "driftDetail": "Missing flood cell preserved as UNKNOWN.",
           "shaDigest": "sha256:7d80...11c4"
         },
         {
-          "id": "S12-RET",
-          "name": "Local Tantivy + ONNX Hybrid Retrieval",
-          "contract": "HYBRID_CATALOGUE_INDEX_BUNDLE_V1",
+          "id": "S12",
+          "name": "Hybrid RAG Match",
+          "contract": "HYBRID_BUNDLE_V1",
           "happyStatus": "PASS",
           "driftStatus": "PASS",
-          "happyDetail": "Runs BM25 + multilingual-e5-small (384-d) with RRF k=60 and Beam Search.",
-          "driftDetail": "Fail-closed blob verification passes; deterministic ranking preserved.",
+          "happyDetail": "Tantivy BM25 + ONNX E5 fused via RRF k=60.",
+          "driftDetail": "Local search unaffected by upstream drift.",
           "shaDigest": "sha256:6142...18b3"
         },
         {
-          "id": "S16-VAL",
-          "name": "Semantic Conservation Validator & Repair",
-          "contract": "forensic-output.schema.json",
+          "id": "S16",
+          "name": "Schema Validator",
+          "contract": "forensic-output.schema",
           "happyStatus": "PASS",
           "driftStatus": "REPAIRED",
-          "happyDetail": "0 schema errors: all claims carry evidence_refs, status, and causal_claim: false.",
-          "driftDetail": "Validator catches dropped Energy G field -> contract_repairs re-synthesizes Stage S16 only -> 0 errors.",
+          "happyDetail": "All 200 schema rules pass cleanly.",
+          "driftDetail": "Caught missing Energy field -> auto-repaired S16 only.",
           "shaDigest": "sha256:c301...77f2"
         },
         {
-          "id": "S18-UI",
-          "name": "Decoupled React 19 View-Model Sync",
+          "id": "S18",
+          "name": "React 19 Publish",
           "contract": "sync-listing-data.mjs",
           "happyStatus": "PASS",
           "driftStatus": "PASS",
-          "happyDetail": "Publishes validated JSON view-model to isolated React 19 + Tailwind v4 surface.",
-          "driftDetail": "UI stays completely shielded from invalid payloads until S16 passes with 0 errors.",
+          "happyDetail": "Clean JSON synced to static UI.",
+          "driftDetail": "UI never receives broken or hallucinated data.",
           "shaDigest": "sha256:e5a4...901b"
         }
       ]
     },
     "rrfChart": {
-      "title": "Chart 4B: Local Hybrid Retrieval & Typed Facet Architecture",
-      "subtitle": "Illustrative normalized recall profile across typed catalogue facets comparing single-lane retrieval against Reciprocal Rank Fusion (k=60) + Beam Search.",
-      "toggleTableLabel": "Toggle Accessible Data Table",
-      "note": "Illustrative evaluation profile demonstrating why hybrid_catalogue_index.py forbids lexical_only_fallback and model_provider_fallback.",
+      "title": "Why Hybrid RAG Beats Keyword-Only or Vector-Only Search",
+      "subtitle": "Illustrative recall profile across product attributes showing how Tantivy BM25 + ONNX E5 Vectors + Beam Search work together.",
+      "toggleTableLabel": "Show Data Table",
+      "note": "Illustrative architectural profile demonstrating why hybrid_catalogue_index.py requires both lanes active.",
       "modes": [
         {
           "id": "bm25",
-          "label": "BM25 Only (Tantivy)",
+          "label": "Keyword Only (Tantivy)",
           "shape": "square",
           "scores": [
-            { "facet": "Material & SKU Match", "value": 88 },
-            { "facet": "Multilingual Style Cue", "value": 46 },
-            { "facet": "Spatial Dimension Fit", "value": 74 },
-            { "facet": "Full Room Ensemble", "value": 61 }
+            { "facet": "Exact Material / SKU", "value": 88 },
+            { "facet": "Style / Semantics", "value": 46 },
+            { "facet": "Room Fit & Ensemble", "value": 61 }
           ]
         },
         {
           "id": "vector",
-          "label": "Dense Only (ONNX E5 384-d)",
+          "label": "Vector Only (ONNX E5)",
           "shape": "triangle",
           "scores": [
-            { "facet": "Material & SKU Match", "value": 58 },
-            { "facet": "Multilingual Style Cue", "value": 86 },
-            { "facet": "Spatial Dimension Fit", "value": 54 },
-            { "facet": "Full Room Ensemble", "value": 66 }
-          ]
-        },
-        {
-          "id": "rrf",
-          "label": "RRF Fusion (k=60)",
-          "shape": "diamond",
-          "scores": [
-            { "facet": "Material & SKU Match", "value": 89 },
-            { "facet": "Multilingual Style Cue", "value": 85 },
-            { "facet": "Spatial Dimension Fit", "value": 81 },
-            { "facet": "Full Room Ensemble", "value": 79 }
+            { "facet": "Exact Material / SKU", "value": 58 },
+            { "facet": "Style / Semantics", "value": 86 },
+            { "facet": "Room Fit & Ensemble", "value": 66 }
           ]
         },
         {
           "id": "beam",
-          "label": "RRF + Beam Search Rerank",
+          "label": "Hybrid RRF + Beam Search",
           "shape": "circle",
           "scores": [
-            { "facet": "Material & SKU Match", "value": 92 },
-            { "facet": "Multilingual Style Cue", "value": 88 },
-            { "facet": "Spatial Dimension Fit", "value": 94 },
-            { "facet": "Full Room Ensemble", "value": 91 }
+            { "facet": "Exact Material / SKU", "value": 92 },
+            { "facet": "Style / Semantics", "value": 88 },
+            { "facet": "Room Fit & Ensemble", "value": 91 }
           ]
         }
       ]
     },
     "epistemicInspector": {
-      "title": "Widget 4C: Epistemic Claim & Provenance Validator Demo",
-      "subtitle": "Compare an accepted snapshot-grounded proposition chain against a fail-closed rejected payload.",
-      "validTabLabel": "Accepted Proposition Chain",
-      "blockedTabLabel": "Fail-Closed Rejected Hallucination",
+      "title": "Hallucination Guard: Live Example",
+      "subtitle": "Switch tabs to see what passes validation vs. what gets automatically blocked.",
+      "validTabLabel": "Accepted (Grounded in Facts)",
+      "blockedTabLabel": "Blocked Hallucination",
       "validPayload": {
-        "verdict": "PASS (0 Semantic Errors)",
-        "reason": "All observed facts preserved, raster NoData kept as UNKNOWN, web_access=false.",
+        "verdict": "PASS (0 Errors)",
+        "reason": "Observed facts preserved, missing flood map kept as UNKNOWN.",
         "tiers": [
           {
-            "tier": "TIER 1",
+            "tier": "FACT",
             "epistemicClass": "CANONICAL_FACT",
-            "statement": "Portal snapshot records Energy Rating = G and Flood Raster GRAY_INDEX = 999 (NoData).",
+            "statement": "Portal snapshot lists Energy Rating = G; Flood Map = NoData (999).",
             "status": "OBSERVED",
             "shaRef": "sha256:snap_9f2c"
           },
           {
-            "tier": "TIER 2",
-            "epistemicClass": "DETERMINISTIC_DERIVATION",
-            "statement": "Haversine distance to nearest primary school entrance = 25m (Overture + Catastro).",
-            "status": "OBSERVED",
-            "shaRef": "sha256:geo_7d80"
-          },
-          {
-            "tier": "TIER 5",
+            "tier": "HYPOTHESIS",
             "epistemicClass": "RISK_HYPOTHESIS",
-            "statement": "Street-facing lower-floor rooms may experience drop-off traffic peaks (08:30-09:15). Flood hazard status = UNKNOWN.",
+            "statement": "Primary school is 25m away; morning drop-off noise possible. Flood risk = UNKNOWN.",
             "status": "UNKNOWN",
             "shaRef": "sha256:geo_7d80"
           },
           {
-            "tier": "TIER 6",
+            "tier": "ACTION",
             "epistemicClass": "RECOMMENDED_ACTION",
-            "statement": "Verify acoustic glazing on-site during morning arrival and obtain municipal flood certificate (DATA_VERIFICATION).",
+            "statement": "Inspect window soundproofing during morning hours and request flood certificate.",
             "status": "PASS",
             "shaRef": "sha256:prop_c301"
           }
         ]
       },
       "blockedPayload": {
-        "verdict": "FAIL-CLOSED REJECT (3 Violations)",
-        "reason": "Blocked before UI render: mutated Energy fact, inverted NoData into negative claim, unbacked CTR lift.",
+        "verdict": "BLOCKED (3 Violations)",
+        "reason": "Validator stopped render: LLM tried to alter Energy Rating, guess flood safety, and invent metrics.",
         "tiers": [
           {
-            "tier": "VIOLATION 1",
+            "tier": "ERROR 1",
             "epistemicClass": "FACT_MUTATION",
-            "statement": "Reported Energy Rating = UNKNOWN when canonical portal snapshot explicitly observed G.",
+            "statement": "Changed Energy Rating G into UNKNOWN.",
             "status": "FAIL-CLOSED",
             "shaRef": "err:FACT_OVERWRITE"
           },
           {
-            "tier": "VIOLATION 2",
+            "tier": "ERROR 2",
             "epistemicClass": "NODATA_INVERSION",
-            "statement": "Asserted 'Zero flood risk' from Flood Raster GRAY_INDEX = 999 (NoData).",
+            "statement": "Wrote 'Zero flood risk' even though official raster returned NoData.",
             "status": "REJECTED",
             "shaRef": "err:NEGATIVE_EVIDENCE"
           },
           {
-            "tier": "VIOLATION 3",
-            "epistemicClass": "UNBACKED_NUMERIC_LIFT",
-            "statement": "Claimed '+22% faster sale speed' without empirical causal backing.",
+            "tier": "ERROR 3",
+            "epistemicClass": "UNBACKED_METRIC",
+            "statement": "Invented '+22% faster sale' with zero evidence reference.",
             "status": "FAIL-CLOSED",
             "shaRef": "err:CAUSAL_UNBACKED"
           }

@@ -1,129 +1,179 @@
 {
   "slug": "oracle-wave-y",
   "systemId": "oracle",
-  "eyebrow": "02 / TRADE BOT (ORACLE & WAVE Y)",
-  "title": "Quantitative ML Research, Market Regime Discovery, Visual DAG Compiler & 1:1 Replay Platform",
+  "eyebrow": "PROJECT 02 · MACHINE LEARNING, CLUSTERING & DAG COMPILER",
+  "title": "Trade Bot (Oracle & Wave Y): Leakage-Free ML & Visual Strategy Engine",
+  "plainPitch": "A hybrid Python + TypeScript ML platform that discovers market regimes with UMAP/HDBSCAN, validates LightGBM models without future-data leakage, and compiles drag-and-drop React Flow graphs into deterministic runtime code.",
+  "scopeDisclaimer": "Methodology Note: Documents ML validation, clustering, and system parity engineering only. No trading profit claims are made.",
   "scaleBadges": [
-    "24 TypeScript Domain Modules",
-    "100+ Python ML & Research Tools",
-    "LightGBM 4.6 + Scikit-Learn 1.9",
-    "UMAP + HDBSCAN 0.8.33",
-    "DuckDB + PyArrow Parquet",
-    "React Flow v12 DAG UI"
+    "LightGBM 4.6 + Scikit-Learn",
+    "UMAP + HDBSCAN",
+    "DuckDB + Parquet + Postgres + Redis",
+    "React Flow DAG Compiler",
+    "100+ ML & Research Tools"
   ],
-  "whyHeading": "Why This Project Exists",
-  "whyParagraphs": [
-    "Algorithmic trading research usually breaks in four predictable ways: standard cross-validation leaks overlapping future price windows into training sets; strategy logic written in Python notebooks diverges from TypeScript execution code; gradient-boosted trees overfit noisy features without calibrated linear benchmarks; and static thresholds collapse when market regimes shift.",
-    "Trade Bot was built as a strict, leakage-proof research and replay platform where ML models, unsupervised regime mining, visual graph compilation, and execution parity share deterministic contracts."
-  ],
-  "scopeDisclaimer": "Scope Notice: All public architecture and evaluation diagrams document ML validation methodology, data engineering, and deterministic execution parity only. No proprietary strategy parameters or financial return claims are presented.",
-  "howHeading": "How the Architecture Works",
-  "subsystems": [
+  "diagramHint": "Click any block in the ML & execution pipeline below to inspect its interactive visualizer:",
+  "nodes": [
     {
       "id": "lakehouse",
-      "code": "SUB-01",
-      "title": "Columnar & Relational Lakehouse with Lineage Pinning",
-      "summary": "Enforces strict Binance USD-M Futures venue isolation and SHA-256 dataset digests across Parquet, DuckDB, PostgreSQL, and Redis.",
-      "bullets": [
-        "Market data ingests strictly from Binance USD-M Futures APIs and Vision archives into SHA-256 pinned Parquet corpora, failing closed on mixed-venue or unverified datasets.",
-        "Analytical workloads query multi-gigabyte archives via DuckDB 1.5.5, PyArrow 16.1, Pandas, and NumPy, while discovery_dataset_rows, trade lifecycle snapshots, and optimizer queues persist in PostgreSQL, SQLite (better-sqlite3), and Redis (ioredis)."
-      ]
+      "step": "LAYER 1",
+      "title": "Market Lakehouse",
+      "roleBadge": "DuckDB + Postgres",
+      "icon": "database",
+      "plainSummary": "Stores SHA-256 verified Parquet market archives queried by DuckDB, backed by PostgreSQL state and Redis queues.",
+      "visualType": "purged-cv",
+      "drawerEyebrow": "Columnar & Relational Storage Stack",
+      "drawerBullets": [
+        "Ingests strictly from Binance USD-M Futures & Vision archives into SHA-256 pinned Parquet files queried via DuckDB 1.5.5 and PyArrow 16.1.",
+        "Stores engineered feature tables (discovery_dataset_rows) and lifecycle snapshots in PostgreSQL, local caches in SQLite, and job queues in Redis (ioredis)."
+      ],
+      "githubSectionLink": {
+        "label": "View Hybrid Lakehouse Diagram on GitHub",
+        "path": "case-studies/02-...md#2-diagram-1-end-to-end-hybrid-platform-architecture",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#2-diagram-1-end-to-end-hybrid-platform-architecture"
+      }
     },
     {
-      "id": "oracle-ml",
-      "code": "SUB-02",
-      "title": "Oracle Supervised ML & Purged Walk-Forward Validation",
-      "summary": "Benchmarks depth-constrained LightGBM challengers against Scikit-Learn linear baselines under episode-grouped embargo folds.",
-      "bullets": [
-        "Inside the Oracle pipeline, LightGBM 4.6 (LGBMClassifier and LGBMRegressor) challengers benchmark directly against Scikit-Learn 1.9 baselines (SimpleImputer -> StandardScaler -> LogisticRegression) and historical priors.",
-        "Expanding temporal quantile splits enforce outcomeAvailableAt < fold_start with a PURGE_4H_MS embargo buffer and episode grouping (symbol|episodeId). A programmatic assertion aborts any run if set(train.group) & set(test.group) is non-empty, evaluating models on out-of-sample ROC-AUC, Log-Loss calibration, and net-of-fee/slippage/funding replay."
-      ]
+      "id": "wave-y-cluster",
+      "step": "LAYER 2",
+      "title": "Regime Clustering",
+      "roleBadge": "UMAP + HDBSCAN",
+      "icon": "layoutGrid",
+      "plainSummary": "Compresses 30+ price and order-flow metrics via UMAP and discovers natural market regimes with HDBSCAN density clustering.",
+      "visualType": "umap-clusters",
+      "drawerEyebrow": "Wave Y Unsupervised Regime Discovery",
+      "drawerBullets": [
+        "Computes 30+ point-in-time features (trend persistence, structural churn, taker buy/sell ratio, volatility compression, BTC/ETH leadership).",
+        "Runs StandardScaler strictly on in-sample cutoffs, reduces dimensions with UMAP, clusters with HDBSCAN 0.8.33, and checks stability via Feature Ablation (hl02)."
+      ],
+      "githubSectionLink": {
+        "label": "View UMAP & HDBSCAN Diagram on GitHub",
+        "path": "case-studies/02-...md#4-diagram-3-wave-y-unsupervised-market-regime-discovery",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#4-diagram-3-wave-y-unsupervised-market-regime-discovery"
+      }
     },
     {
-      "id": "wave-y",
-      "code": "SUB-03",
-      "title": "Wave Y Unsupervised Market Regime Discovery",
-      "summary": "Discovers density-based market regimes via UMAP + HDBSCAN on 30+ point-in-time features with ablation and OOS portability checks.",
-      "bullets": [
-        "Wave Y scales 30+ point-in-time microstructural and cross-asset features (trend persistence, structural churn, taker buy/sell imbalance, volatility compression, BTC/ETH leadership, and sector relative strength) strictly on in-sample cutoffs.",
-        "Features project through UMAP into HDBSCAN 0.8.33 density clusters with explicit noise separation, followed by feature ablation (hl02), radius sensitivity sweeps (hl01), counterfactual attribution, and out-of-sample portability validation."
-      ]
+      "id": "lightgbm-cv",
+      "step": "LAYER 3",
+      "title": "LightGBM + Purged CV",
+      "roleBadge": "Zero Leakage",
+      "icon": "brain",
+      "plainSummary": "Trains LightGBM models against Scikit-Learn linear baselines using time-purged splits so future windows never leak.",
+      "visualType": "purged-cv",
+      "drawerEyebrow": "Oracle Supervised ML & Leakage Prevention",
+      "drawerBullets": [
+        "Benchmarks depth-constrained LightGBM 4.6 (LGBMClassifier & LGBMRegressor) against Scikit-Learn LogisticRegression baselines and prior rates.",
+        "Enforces outcomeAvailableAt < fold_start with a 4-hour PURGE_4H_MS embargo gap and episode grouping (symbol|episodeId) before scoring ROC-AUC and Log-Loss."
+      ],
+      "githubSectionLink": {
+        "label": "View Purged Walk-Forward Diagram on GitHub",
+        "path": "case-studies/02-...md#3-diagram-2-oracle-purged-walk-forward--episode-grouped-validation-pipeline",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#3-diagram-2-oracle-purged-walk-forward--episode-grouped-validation-pipeline"
+      }
     },
     {
-      "id": "compiler-parity",
-      "code": "SUB-04",
-      "title": "Visual DAG Strategy Compiler & 1:1 Replay Parity",
-      "summary": "Compiles React Flow strategy graphs through AJV schemas into a single TypeScript kernel shared across Backtest, Replay, Paper, and Live.",
-      "bullets": [
-        "A visual node-graph editor built with React 18, @xyflow/react (React Flow v12), Dagre, Zustand, and TradingView Lightweight Charts compiles strategy graphs through AJV JSON Schema validation and updateBlockLogicManifest.ts checks into deterministic runtime ASTs.",
-        "Backtesting, historical replay harnesses (proc204 and proc206), paper simulation, and live runtime (Express 5, WebSockets ws, CCXT) execute the exact same decision kernel, with mode differences confined strictly to clock and broker adapters."
-      ]
+      "id": "model-benchmark",
+      "step": "LAYER 4",
+      "title": "Model Calibration Gate",
+      "roleBadge": "AUC & Log-Loss",
+      "icon": "sliders",
+      "plainSummary": "Requires tree models to beat calibrated linear baselines on out-of-sample discrimination and probability calibration.",
+      "visualType": "challenger-chart",
+      "drawerEyebrow": "Challenger vs. Linear Baseline Accountability",
+      "drawerBullets": [
+        "Evaluates Prior Baseline, Direction-Only Linear, Full Linear (SimpleImputer + StandardScaler + LogisticRegression), and LightGBM side by side.",
+        "Includes net-of-cost replay checks accounting for fees, slippage, funding, and drawdown."
+      ],
+      "githubSectionLink": {
+        "label": "View Challenger Comparison Diagram on GitHub",
+        "path": "case-studies/02-...md#3-diagram-2-oracle-purged-walk-forward--episode-grouped-validation-pipeline",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#3-diagram-2-oracle-purged-walk-forward--episode-grouped-validation-pipeline"
+      }
+    },
+    {
+      "id": "dag-compiler",
+      "step": "LAYER 5",
+      "title": "React Flow AST Engine",
+      "roleBadge": "1:1 Replay",
+      "icon": "workflow",
+      "plainSummary": "Compiles visual React Flow strategy graphs through AJV schemas so Backtest, Replay, Paper, and Live run identical code.",
+      "visualType": "umap-clusters",
+      "drawerEyebrow": "Visual DAG Compiler & Deterministic Execution Parity",
+      "drawerBullets": [
+        "Built a visual editor in React 18, @xyflow/react v12, Dagre, Zustand, and TradingView Lightweight Charts.",
+        "Compiles graphs via updateBlockLogicManifest and AJV JSON Schema validation into one TypeScript kernel shared across Backtest, proc204/proc206 Replay, Paper, and Express 5 / CCXT Live execution."
+      ],
+      "githubSectionLink": {
+        "label": "View DAG Compiler & Parity Diagram on GitHub",
+        "path": "case-studies/02-...md#5-diagram-4-visual-dag-compiler-execution-parity--multi-agent-governance",
+        "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#5-diagram-4-visual-dag-compiler-execution-parity--multi-agent-governance"
+      }
     }
   ],
   "githubLinks": [
     {
-      "label": "Case Study 02: ML Validation, UMAP/HDBSCAN & Replay Architecture",
+      "label": "Full Oracle & Wave Y Case Study (4 Diagrams)",
       "path": "case-studies/02-oracle-quantitative-ml-and-replay-platform.md",
       "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md"
     }
   ],
   "visuals": {
     "purgedCv": {
-      "title": "Animation 5A: Purged Walk-Forward vs. Standard K-Fold Leakage Visualizer",
-      "subtitle": "Toggle between Naive K-Fold and Purged Episode-Grouped Walk-Forward to see how outcomeAvailableAt < fold_start and PURGE_4H_MS block lookahead overlap.",
-      "naiveLabel": "Naive K-Fold (Leaks Future Windows)",
-      "purgedLabel": "Purged Episode-Grouped CV (Clean)",
+      "title": "How We Prevent ML Data Leakage (Purged Walk-Forward CV)",
+      "subtitle": "Standard k-fold leaks future outcomes into training. Switch modes to see how our 4-hour purge gap keeps test folds clean.",
+      "naiveLabel": "Standard K-Fold (Leaks Future)",
+      "purgedLabel": "Purged Walk-Forward (Clean)",
       "assertCode": "if set(train.group) & set(test.group): raise RuntimeError('episode leakage')",
-      "naiveCaption": "Overlapping episodes whose outcomeAvailableAt falls inside the test window bleed into training splits, inflating apparent AUC.",
-      "purgedCaption": "Every training row satisfies outcomeAvailableAt < fold_start, separated by the PURGE_4H_MS embargo zone and grouped by symbol|episodeId.",
+      "naiveCaption": "Future price outcomes overlap inside training splits, creating fake high backtest scores.",
+      "purgedCaption": "Every training sample finishes strictly before fold_start, separated by a 4-hour purge buffer.",
       "folds": [
         {
           "fold": "Fold 1",
           "trainPct": 34,
           "purgePct": 8,
           "testPct": 16,
-          "trainEpisodes": "outcomeAvailableAt < cut[1]",
-          "testEpisodes": "cut[1] .. cut[2]"
+          "trainEpisodes": "Finished < Cut 1",
+          "testEpisodes": "Window 1"
         },
         {
           "fold": "Fold 2",
           "trainPct": 50,
           "purgePct": 8,
           "testPct": 16,
-          "trainEpisodes": "outcomeAvailableAt < cut[2]",
-          "testEpisodes": "cut[2] .. cut[3]"
+          "trainEpisodes": "Finished < Cut 2",
+          "testEpisodes": "Window 2"
         },
         {
           "fold": "Fold 3",
           "trainPct": 66,
           "purgePct": 8,
           "testPct": 16,
-          "trainEpisodes": "outcomeAvailableAt < cut[3]",
-          "testEpisodes": "cut[3] .. cut[4]"
+          "trainEpisodes": "Finished < Cut 3",
+          "testEpisodes": "Window 3"
         },
         {
           "fold": "Fold 4",
           "trainPct": 76,
           "purgePct": 8,
           "testPct": 16,
-          "trainEpisodes": "outcomeAvailableAt < cut[4]",
-          "testEpisodes": "cut[4] .. cut[5]"
+          "trainEpisodes": "Finished < Cut 4",
+          "testEpisodes": "Window 4"
         }
       ]
     },
     "challengerChart": {
-      "title": "Chart 5B: Challenger vs. Baseline Evaluation Protocol",
-      "subtitle": "Illustrative out-of-sample comparison structure showing how LightGBM challengers are benchmarked against calibrated Scikit-Learn linear baselines.",
-      "toggleTableLabel": "Toggle Accessible Data Table",
-      "note": "Illustrative protocol profile: depth-constrained LightGBM must improve both discrimination (ROC-AUC) and calibration (lower Log-Loss) over linear baselines before promotion.",
+      "title": "LightGBM vs. Linear Baseline Benchmarking",
+      "subtitle": "Illustrative evaluation protocol: LightGBM challengers must beat calibrated Scikit-Learn linear models out of sample.",
+      "toggleTableLabel": "Show Data Table",
+      "note": "Illustrative protocol comparison showing higher ROC-AUC and lower Log-Loss calibration targets.",
       "models": [
         {
           "id": "prior",
-          "label": "Historical Rate Prior",
+          "label": "Historical Frequency Prior",
           "shape": "square",
           "rocAuc": 0.50,
           "logLoss": 0.96,
-          "calibrationNote": "Class-frequency baseline only; zero feature signal."
+          "calibrationNote": "Baseline class frequency only."
         },
         {
           "id": "dir-linear",
@@ -131,36 +181,36 @@
           "shape": "triangle",
           "rocAuc": 0.55,
           "logLoss": 0.91,
-          "calibrationNote": "LogisticRegression on direction + episode start state."
+          "calibrationNote": "LogisticRegression on basic direction state."
         },
         {
           "id": "full-linear",
-          "label": "Full-Surface Linear (Sklearn)",
+          "label": "Full Linear (Scikit-Learn)",
           "shape": "diamond",
           "rocAuc": 0.61,
           "logLoss": 0.86,
-          "calibrationNote": "SimpleImputer + StandardScaler + regularized LogisticRegression (C=0.2)."
+          "calibrationNote": "StandardScaler + regularized LogisticRegression."
         },
         {
           "id": "lgbm",
-          "label": "Challenger LightGBM",
+          "label": "LightGBM Challenger",
           "shape": "circle",
           "rocAuc": 0.65,
           "logLoss": 0.83,
-          "calibrationNote": "LGBMClassifier (max_depth=3, num_leaves=8) gated by purged walk-forward lift."
+          "calibrationNote": "Depth-constrained LGBMClassifier checked on purged folds."
         }
       ]
     },
     "waveYPlot": {
-      "title": "Plot 5C: Wave Y UMAP + HDBSCAN Regime Map & DAG-to-AST Pipeline",
-      "subtitle": "Inspect illustrative 2D density clusters from 30+ microstructural features alongside feature ablation groups and visual strategy compilation.",
-      "clusterModeLabel": "UMAP + HDBSCAN Regimes",
-      "ablationModeLabel": "Feature Ablation (hl02)",
-      "compilerTitle": "React Flow (@xyflow/react) -> Deterministic Runtime AST",
+      "title": "UMAP + HDBSCAN Market Regimes & Compiler Flow",
+      "subtitle": "Toggle between 2D density clusters and feature ablation importance scores.",
+      "clusterModeLabel": "2D Regime Clusters",
+      "ablationModeLabel": "Feature Importance",
+      "compilerTitle": "React Flow -> AJV Validation -> 1:1 Runtime Engine",
       "clusters": [
         {
           "id": "trend-persist",
-          "label": "Regime A: Persistent Trend",
+          "label": "Persistent Trend",
           "shape": "circle",
           "points": [
             { "x": 22, "y": 28 },
@@ -172,7 +222,7 @@
         },
         {
           "id": "vol-compress",
-          "label": "Regime B: Volatility Compression",
+          "label": "Volatility Squeeze",
           "shape": "triangle",
           "points": [
             { "x": 72, "y": 25 },
@@ -184,7 +234,7 @@
         },
         {
           "id": "struct-churn",
-          "label": "Regime C: Structural Churn",
+          "label": "Choppy Churn",
           "shape": "diamond",
           "points": [
             { "x": 52, "y": 72 },
@@ -196,7 +246,7 @@
         },
         {
           "id": "hdbscan-noise",
-          "label": "HDBSCAN Unassigned Noise (-1)",
+          "label": "Filtered Noise (-1)",
           "shape": "cross",
           "points": [
             { "x": 42, "y": 48 },
@@ -208,46 +258,46 @@
       ],
       "ablationFeatures": [
         {
-          "feature": "trend_persistence & trend_to_range",
+          "feature": "Trend Persistence & Range Ratio",
           "group": "Price Structure",
           "deltaScore": 84
         },
         {
-          "feature": "taker_buy_sell & top_position_ratio",
-          "group": "Orderflow & Positioning",
+          "feature": "Taker Buy/Sell & Top Account Ratios",
+          "group": "Orderflow",
           "deltaScore": 72
         },
         {
-          "feature": "btc_leadership & sector_return_proxy",
-          "group": "Cross-Asset Context",
+          "feature": "BTC Leadership & Sector Proxy",
+          "group": "Cross-Asset",
           "deltaScore": 65
         },
         {
-          "feature": "volatility_compression & bollinger_bw",
-          "group": "Volatility Regime",
+          "feature": "Volatility Compression & Bandwidth",
+          "group": "Volatility",
           "deltaScore": 58
         }
       ],
       "compilerNodes": [
         {
           "step": "01",
-          "node": "@xyflow/react + Dagre Graph",
-          "artifact": "Visual Nodes & Edges (Zustand)"
+          "node": "React Flow Canvas",
+          "artifact": "Drag-and-drop DAG nodes"
         },
         {
           "step": "02",
-          "node": "updateBlockLogicManifest --check",
-          "artifact": "Canonical Key & Block Integrity"
+          "node": "AJV Schema Check",
+          "artifact": "Validates every block contract"
         },
         {
           "step": "03",
-          "node": "AJV JSON Schema Contract",
-          "artifact": "Compiled Deterministic Strategy AST"
+          "node": "TypeScript AST",
+          "artifact": "Compiles deterministic rules"
         },
         {
           "step": "04",
-          "node": "Shared Execution Kernel",
-          "artifact": "proc204/206 Replay = Paper = Live"
+          "node": "1:1 Execution Parity",
+          "artifact": "Replay = Paper = Live"
         }
       ]
     }

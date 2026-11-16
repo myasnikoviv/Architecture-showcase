@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #020617;
-  --color-surface-1: #0F172A;
-  --color-surface-2: #1E293B;
-  --color-card: #0E1223;
-  --color-muted: #1A1E2F;
-  --color-fg: #F8FAFC;
-  --color-fg-muted: #94A3B8;
-  --color-border-subtle: #1E293B;
-  --color-border-strong: #334155;
-  --color-ring: #38BDF8;
-  --color-accent-run: #22C55E;
-  --color-on-accent: #0F172A;
-  --color-warn: #F59E0B;
-  --color-reject: #EF4444;
-  --color-system-pi: #6366F1;
-  --color-system-oracle: #06B6D4;
-  --color-system-guelga: #F59E0B;
+  --color-canvas: #F8FAFC;
+  --color-surface-1: #F1F5F9;
+  --color-surface-2: #E2E8F0;
+  --color-card: #FFFFFF;
+  --color-muted: #F1F5F9;
+  --color-fg: #0F172A;
+  --color-fg-muted: #475569;
+  --color-border-subtle: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-ring: #2563EB;
+  --color-accent-run: #2563EB;
+  --color-on-accent: #FFFFFF;
+  --color-pass: #16A34A;
+  --color-warn: #D97706;
+  --color-reject: #DC2626;
+  --color-system-pi: #4F46E5;
+  --color-system-oracle: #0284C7;
 
-  --font-sans: var(--font-ibm-plex-sans), "IBM Plex Sans", system-ui, sans-serif;
+  --font-display: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
+}
+
+@keyframes showcaseFlowDash {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes showcaseReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-flow-dash {
+  stroke-dasharray: 6 6;
+  animation: showcaseFlowDash 1.15s linear infinite;
+}
+
+.animate-fade-slide {
+  animation: showcaseReveal 0.22s ease-out both;
 }
 
 @layer base {
@@ -36,7 +66,6 @@
     color: var(--color-fg);
     min-height: 100vh;
     overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
   }
 
   :focus-visible {
@@ -50,11 +79,8 @@
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .animate-flow-dash,
+  .animate-fade-slide {
+    animation: none !important;
   }
 }

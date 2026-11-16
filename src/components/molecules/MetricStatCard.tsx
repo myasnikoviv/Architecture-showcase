@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  MetricNumber,
-  SurfaceCard,
-  Text,
-} from "@/components/atoms";
+import { MetricNumber, SurfaceCard, Text } from "@/components/atoms";
 import type { SystemAccentKey } from "@/design-system/quarks";
 
 export interface MetricStatCardProps {
@@ -22,7 +18,7 @@ export function MetricStatCard({
   return (
     <SurfaceCard accent={systemId} padding="sm" className="flex flex-col gap-1.5">
       <MetricNumber value={value} accent={systemId} />
-      <Text as="div" variant="mono" className="text-fg font-medium">
+      <Text as="div" variant="body" className="text-sm font-bold text-fg">
         {label}
       </Text>
       <Text variant="muted" className="text-xs leading-snug">

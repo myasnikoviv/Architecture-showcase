@@ -1,88 +1,73 @@
 {
   "meta": {
-    "siteTitle": "Engineering Architecture Showcase | Systems, ML Validation & Contracts",
-    "siteDescription": "Interactive systems architecture companion to github.com/myasnikoviv/Architecture-showcase covering Property Intelligence, Oracle & Wave Y, and GÜELGA."
+    "siteTitle": "AI, RAG & ML Architecture Showcase | Interactive Technical Portfolio",
+    "siteDescription": "Click any technology from your job description to see interactive diagrams, animated data flows, and GitHub specs across Property Intelligence and Oracle & Wave Y."
   },
   "nav": {
-    "brandTitle": "Engineering Architecture Showcase",
-    "subtitleBadge": "Interactive Systems & Contracts Companion",
+    "brandTitle": "Architecture Showcase",
+    "subtitleBadge": "AI, RAG & ML Systems",
     "links": {
-      "overview": "Overview",
-      "techExplorer": "Tech Explorer",
-      "pi": "01. Property Intelligence",
-      "oracle": "02. Oracle & Wave Y",
-      "guelga": "03. GÜELGA",
-      "contracts": "Contracts"
+      "matcher": "Skill Matcher",
+      "pi": "Property Intelligence",
+      "oracle": "Trade Bot ML",
+      "contracts": "Schemas"
     },
     "actions": {
       "githubShowcase": "GitHub Showcase",
       "githubShowcaseUrl": "https://github.com/myasnikoviv/Architecture-showcase",
       "agentsSystem": "Agents-system Repo",
       "agentsSystemUrl": "https://github.com/myasnikoviv/Agents-system",
-      "authorPortfolio": "Author Portfolio",
-      "authorPortfolioUrl": "https://www.linkedin.com/in/myasnikoviv/",
       "backToOverview": "Back to Overview",
-      "openFullDeepDive": "Open Dedicated System Page",
-      "openRawOnGitHub": "Open Raw on GitHub",
+      "openFullDeepDive": "Open Full Page",
+      "openRawOnGitHub": "Open File on GitHub",
+      "readTechnicalDetails": "Inspect Details & Code",
       "copyJson": "Copy JSON",
       "copied": "Copied"
     }
   },
   "contractsSection": {
     "id": "contracts",
-    "eyebrow": "CONTRACT-FIRST ENFORCEMENT",
-    "heading": "Inspect the Enforcement Contracts Directly",
-    "intro": "Prompts suggest behavior; schemas and policy manifests enforce it. Browse the sanitized reference contracts below (read directly from /contracts/*.json) or open the full repository on GitHub.",
+    "eyebrow": "VERIFIABLE JSON CONTRACTS",
+    "heading": "Real Schema Contracts Behind the Diagrams",
+    "intro": "Instead of hoping AI prompts behave, these schemas validate outputs in code. Inspect any file below or open it directly on GitHub.",
     "contracts": [
       {
         "id": "epistemic",
         "filename": "epistemic-forensic-proposition.schema.json",
-        "systemLabel": "01 / Property Intelligence",
+        "systemLabel": "Property Intelligence",
         "systemId": "pi",
-        "caption": "Locks synthesis models to web_access: false and enforces explicit epistemic_class, evidence_refs, and UNKNOWN/UNAVAILABLE state preservation.",
+        "caption": "Blocks AI hallucinations by forcing every claim to cite verified source hashes and preserve missing values as UNKNOWN.",
         "invariants": [
-          "model_metadata.web_access locked to false",
-          "Every claim requires sha256 input_snapshot_sha256 & minItems: 1 evidence_refs",
-          "status enum explicitly preserves OBSERVED | UNKNOWN | UNAVAILABLE"
+          "Web search disabled during synthesis (web_access: false)",
+          "Every claim requires a SHA-256 snapshot hash and source reference",
+          "Missing data explicitly stays UNKNOWN or UNAVAILABLE"
         ],
         "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
       },
       {
         "id": "hybrid",
         "filename": "hybrid-retrieval-bundle.schema.json",
-        "systemLabel": "01 / Property Intelligence",
+        "systemLabel": "Property Intelligence",
         "systemId": "pi",
-        "caption": "Pins Tantivy 0.26.2 + ONNX Runtime 1.31.0 (multilingual-e5-small), verifies SHA-256 Hugging Face blob hashes, and bans silent single-lane fallbacks.",
+        "caption": "Runs offline Vector Embeddings (ONNX) + Keyword Search (Tantivy BM25) together with SHA-256 model integrity verification.",
         "invariants": [
-          "lexical_only_fallback and model_provider_fallback hardcoded to false",
-          "Reciprocal Rank Fusion (k=60) with deterministic 5-key tie-break ordering",
-          "Verifies exact 40-char HF revision and 64-char SHA-256 blob hashes offline"
+          "Combines exact keyword search + 384-d semantic vectors (RRF k=60)",
+          "Verifies exact SHA-256 hashes of local ONNX embedding weights",
+          "Fails closed instead of silently degrading search quality"
         ],
         "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
-      },
-      {
-        "id": "context",
-        "filename": "l0-l5-context-retrieval-policy.json",
-        "systemLabel": "03 / GÜELGA",
-        "systemId": "guelga",
-        "caption": "Separates design principles, human approval gates, implementation tokens, and excluded build noise so multi-agent workflows resist context rot.",
-        "invariants": [
-          "File presence in repo never grants retrieval permission without layer match",
-          "HUMAN_VISUAL_GATE_OR_FROZEN_CONTRACT required before L3 implementation opens",
-          "Generic UI skills isolated to implementation_or_mapping_only or qa_only"
-        ],
-        "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/l0-l5-context-retrieval-policy.json"
       }
     ]
   },
   "footer": {
-    "headline": "Want to inspect live TypeScript + LangGraph orchestration code alongside these architecture blueprints?",
-    "subcopy": "Browse the open-source multi-agent control plane repository or inspect the complete Markdown case studies and Mermaid diagrams on GitHub.",
+    "headline": "Want to inspect the open-source TypeScript + LangGraph codebase too?",
+    "subcopy": "See live multi-agent orchestration code in Agents-system or review all Mermaid diagrams and case studies in Architecture-showcase.",
     "ctas": {
-      "showcase": "Explore Architecture-showcase on GitHub",
-      "agentsSystem": "Explore Open-Source Agents-system (630+ files, 174 Jest suites)",
-      "portfolio": "Connect on LinkedIn"
+      "showcase": "Open Architecture-showcase on GitHub",
+      "agentsSystem": "Open Agents-system Monorepo (630+ files)",
+      "portfolio": "LinkedIn Profile",
+      "portfolioUrl": "https://www.linkedin.com/in/myasnikoviv/"
     },
-    "copyright": "Engineering Architecture Showcase · Open Architecture, Private IP"
+    "copyright": "Architecture Showcase · Property Intelligence & Oracle/Wave Y"
   }
 }

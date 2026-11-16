@@ -40,10 +40,10 @@ export function ChartLegendToggle({
       onClick={onClick}
       aria-pressed={isActive}
       className={clsx(
-        "min-h-11 inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-xs transition-colors duration-150 cursor-pointer",
+        "min-h-11 inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 font-sans text-xs font-semibold transition-all duration-150 cursor-pointer",
         isActive
-          ? "border-fg-muted bg-surface-2 text-fg"
-          : "border-border-subtle bg-canvas text-fg-muted opacity-65 hover:opacity-100"
+          ? "border-border-strong bg-card text-fg shadow-xs"
+          : "border-border-subtle bg-surface-1 text-fg-muted opacity-60 hover:opacity-100"
       )}
     >
       <ShapeSvg shape={shape} colorClass={colorClass} />

@@ -13,10 +13,12 @@ export function resolveSupportedLocale(rawLocale: string): AppLocale {
     : routing.defaultLocale;
 }
 
-export async function loadShowcaseBundle(rawLocale: string): Promise<ShowcaseBundle> {
+export async function loadShowcaseBundle(
+  rawLocale: string
+): Promise<ShowcaseBundle> {
   const locale = resolveSupportedLocale(rawLocale);
 
-  const [common, hero, techExplorer, propertyIntelligence, oracleWaveY, guelga] =
+  const [common, hero, techExplorer, propertyIntelligence, oracleWaveY] =
     await Promise.all([
       import(`./locales/${locale}/common.json`).then((m) => m.default),
       import(`./locales/${locale}/hero.json`).then((m) => m.default),
@@ -27,7 +29,6 @@ export async function loadShowcaseBundle(rawLocale: string): Promise<ShowcaseBun
       import(`./locales/${locale}/systems/oracle-wave-y.json`).then(
         (m) => m.default
       ),
-      import(`./locales/${locale}/systems/guelga.json`).then((m) => m.default),
     ]);
 
   const contractsDir = path.join(process.cwd(), "contracts");
@@ -36,7 +37,7 @@ export async function loadShowcaseBundle(rawLocale: string): Promise<ShowcaseBun
       id: string;
       filename: string;
       systemLabel: string;
-      systemId: "pi" | "oracle" | "guelga";
+      systemId: "pi" | "oracle";
       caption: string;
       invariants: string[];
       githubUrl: string;
@@ -57,7 +58,6 @@ export async function loadShowcaseBundle(rawLocale: string): Promise<ShowcaseBun
     techExplorer,
     propertyIntelligence,
     oracleWaveY,
-    guelga,
     contracts,
   });
 }
@@ -68,7 +68,5 @@ export function getSystemBySlug(bundle: ShowcaseBundle, slug: SystemSlug) {
       return bundle.propertyIntelligence;
     case "oracle-wave-y":
       return bundle.oracleWaveY;
-    case "guelga":
-      return bundle.guelga;
   }
 }

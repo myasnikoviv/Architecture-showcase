@@ -9,7 +9,6 @@ import { routing } from "@/i18n/routing";
 const SYSTEM_SLUGS: SystemSlug[] = [
   "property-intelligence",
   "oracle-wave-y",
-  "guelga",
 ];
 
 export function generateStaticParams() {

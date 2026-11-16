@@ -1,14 +1,28 @@
 import { z } from "zod";
 
-export const SystemIdSchema = z.enum(["pi", "oracle", "guelga"]);
+export const SystemIdSchema = z.enum(["pi", "oracle"]);
 export type SystemId = z.infer<typeof SystemIdSchema>;
 
 export const SystemSlugSchema = z.enum([
   "property-intelligence",
   "oracle-wave-y",
-  "guelga",
 ]);
 export type SystemSlug = z.infer<typeof SystemSlugSchema>;
+
+export const IconKeySchema = z.enum([
+  "database",
+  "brain",
+  "search",
+  "shieldCheck",
+  "workflow",
+  "layoutGrid",
+  "cpu",
+  "layers",
+  "sliders",
+  "eye",
+  "server",
+  "sparkles",
+]);
 
 export const GitHubLinkSchema = z.object({
   label: z.string().min(1),
@@ -16,12 +30,24 @@ export const GitHubLinkSchema = z.object({
   url: z.string().url(),
 });
 
-export const SubsystemTabSchema = z.object({
+export const DiagramNodeSchema = z.object({
   id: z.string().min(1),
-  code: z.string().min(1),
+  step: z.string().min(1),
   title: z.string().min(1),
-  summary: z.string().min(1),
-  bullets: z.array(z.string().min(1)).min(1),
+  roleBadge: z.string().min(1),
+  icon: IconKeySchema,
+  plainSummary: z.string().min(1),
+  visualType: z.enum([
+    "rrf-chart",
+    "dag-stepper",
+    "epistemic-guard",
+    "purged-cv",
+    "challenger-chart",
+    "umap-clusters",
+  ]),
+  drawerEyebrow: z.string().min(1),
+  drawerBullets: z.array(z.string().min(1)).min(1),
+  githubSectionLink: GitHubLinkSchema,
 });
 
 export const CommonContentSchema = z.object({
@@ -33,11 +59,9 @@ export const CommonContentSchema = z.object({
     brandTitle: z.string().min(1),
     subtitleBadge: z.string().min(1),
     links: z.object({
-      overview: z.string().min(1),
-      techExplorer: z.string().min(1),
+      matcher: z.string().min(1),
       pi: z.string().min(1),
       oracle: z.string().min(1),
-      guelga: z.string().min(1),
       contracts: z.string().min(1),
     }),
     actions: z.object({
@@ -45,11 +69,10 @@ export const CommonContentSchema = z.object({
       githubShowcaseUrl: z.string().url(),
       agentsSystem: z.string().min(1),
       agentsSystemUrl: z.string().url(),
-      authorPortfolio: z.string().min(1),
-      authorPortfolioUrl: z.string().url(),
       backToOverview: z.string().min(1),
       openFullDeepDive: z.string().min(1),
       openRawOnGitHub: z.string().min(1),
+      readTechnicalDetails: z.string().min(1),
       copyJson: z.string().min(1),
       copied: z.string().min(1),
     }),
@@ -78,6 +101,7 @@ export const CommonContentSchema = z.object({
       showcase: z.string().min(1),
       agentsSystem: z.string().min(1),
       portfolio: z.string().min(1),
+      portfolioUrl: z.string().url(),
     }),
     copyright: z.string().min(1),
   }),
@@ -93,65 +117,45 @@ export const HeroContentSchema = z.object({
     github: z.string().min(1),
     githubUrl: z.string().url(),
   }),
-  metrics: z.array(
-    z.object({
-      id: z.string().min(1),
-      value: z.string().min(1),
-      label: z.string().min(1),
-      detail: z.string().min(1),
-      systemId: SystemIdSchema,
-    })
-  ).length(5),
-  dnaMap: z.object({
-    title: z.string().min(1),
-    subtitle: z.string().min(1),
-    hint: z.string().min(1),
-    invariants: z.array(
+  metrics: z
+    .array(
       z.object({
         id: z.string().min(1),
+        value: z.string().min(1),
         label: z.string().min(1),
-        description: z.string().min(1),
-        systems: z.record(SystemIdSchema, z.string().min(1)),
+        detail: z.string().min(1),
+        systemId: SystemIdSchema,
       })
-    ).length(4),
-    systems: z.array(
-      z.object({
-        id: SystemIdSchema,
-        code: z.string().min(1),
-        name: z.string().min(1),
-        anchor: z.string().min(1),
-      })
-    ).length(3),
-  }),
+    )
+    .length(4),
 });
 
 export const TechExplorerContentSchema = z.object({
   eyebrow: z.string().min(1),
   heading: z.string().min(1),
   intro: z.string().min(1),
-  allFilterLabel: z.string().min(1),
-  detailPrefix: z.object({
-    usedIn: z.string().min(1),
-    whyChosen: z.string().min(1),
-    inspectArtifact: z.string().min(1),
-  }),
-  categories: z.array(
-    z.object({
-      id: z.string().min(1),
-      title: z.string().min(1),
-      items: z.array(
-        z.object({
-          id: z.string().min(1),
-          label: z.string().min(1),
-          systems: z.array(SystemIdSchema).min(1),
-          primarySystem: SystemIdSchema,
-          whereItRuns: z.string().min(1),
-          whyChosen: z.string().min(1),
-          artifact: GitHubLinkSchema,
-        })
-      ).min(1),
-    })
-  ).min(1),
+  pills: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        projectLabel: z.string().min(1),
+        systemId: SystemIdSchema,
+        plainEnglishSummary: z.string().min(1),
+        flowNodes: z
+          .array(
+            z.object({
+              step: z.string().min(1),
+              title: z.string().min(1),
+              subtitle: z.string().min(1),
+              icon: IconKeySchema,
+            })
+          )
+          .length(4),
+        githubLinks: z.array(GitHubLinkSchema).min(1),
+      })
+    )
+    .min(5),
 });
 
 export const PropertyIntelligenceContentSchema = z.object({
@@ -159,11 +163,10 @@ export const PropertyIntelligenceContentSchema = z.object({
   systemId: z.literal("pi"),
   eyebrow: z.string().min(1),
   title: z.string().min(1),
+  plainPitch: z.string().min(1),
   scaleBadges: z.array(z.string().min(1)).min(1),
-  whyHeading: z.string().min(1),
-  whyParagraphs: z.array(z.string().min(1)).min(1),
-  howHeading: z.string().min(1),
-  subsystems: z.array(SubsystemTabSchema).length(4),
+  diagramHint: z.string().min(1),
+  nodes: z.array(DiagramNodeSchema).length(5),
   githubLinks: z.array(GitHubLinkSchema).min(1),
   visuals: z.object({
     dagStepper: z.object({
@@ -183,7 +186,7 @@ export const PropertyIntelligenceContentSchema = z.object({
           driftDetail: z.string().min(1),
           shaDigest: z.string().min(1),
         })
-      ).min(4),
+      ),
     }),
     rrfChart: z.object({
       title: z.string().min(1),
@@ -244,12 +247,11 @@ export const OracleWaveYContentSchema = z.object({
   systemId: z.literal("oracle"),
   eyebrow: z.string().min(1),
   title: z.string().min(1),
-  scaleBadges: z.array(z.string().min(1)).min(1),
-  whyHeading: z.string().min(1),
-  whyParagraphs: z.array(z.string().min(1)).min(1),
+  plainPitch: z.string().min(1),
   scopeDisclaimer: z.string().min(1),
-  howHeading: z.string().min(1),
-  subsystems: z.array(SubsystemTabSchema).length(4),
+  scaleBadges: z.array(z.string().min(1)).min(1),
+  diagramHint: z.string().min(1),
+  nodes: z.array(DiagramNodeSchema).length(5),
   githubLinks: z.array(GitHubLinkSchema).min(1),
   visuals: z.object({
     purgedCv: z.object({
@@ -324,71 +326,6 @@ export const OracleWaveYContentSchema = z.object({
   }),
 });
 
-export const GuelgaContentSchema = z.object({
-  slug: z.literal("guelga"),
-  systemId: z.literal("guelga"),
-  eyebrow: z.string().min(1),
-  title: z.string().min(1),
-  scaleBadges: z.array(z.string().min(1)).min(1),
-  whyHeading: z.string().min(1),
-  whyParagraphs: z.array(z.string().min(1)).min(1),
-  howHeading: z.string().min(1),
-  subsystems: z.array(SubsystemTabSchema).length(3),
-  githubLinks: z.array(GitHubLinkSchema).min(1),
-  visuals: z.object({
-    contextGate: z.object({
-      title: z.string().min(1),
-      subtitle: z.string().min(1),
-      phaseLabel: z.string().min(1),
-      personaLabel: z.string().min(1),
-      phases: z.array(
-        z.object({
-          id: z.string().min(1),
-          label: z.string().min(1),
-          layers: z.array(
-            z.object({
-              code: z.string().min(1),
-              name: z.string().min(1),
-              purpose: z.string().min(1),
-              permission: z.enum(["PERMITTED", "GATED", "BLOCKED"]),
-            })
-          ),
-        })
-      ),
-      personas: z.array(
-        z.object({
-          id: z.string().min(1),
-          label: z.string().min(1),
-          scope: z.string().min(1),
-        })
-      ),
-    }),
-    monorepoQa: z.object({
-      graphTitle: z.string().min(1),
-      packages: z.array(
-        z.object({
-          name: z.string().min(1),
-          role: z.string().min(1),
-        })
-      ),
-      apps: z.array(
-        z.object({
-          name: z.string().min(1),
-          role: z.string().min(1),
-        })
-      ),
-      qaTitle: z.string().min(1),
-      qaItems: z.array(
-        z.object({
-          check: z.string().min(1),
-          tool: z.string().min(1),
-          status: z.enum(["PASS"]),
-        })
-      ),
-    }),
-  }),
-});
-
 export const LoadedContractFileSchema = z.object({
   id: z.string().min(1),
   filename: z.string().min(1),
@@ -407,15 +344,16 @@ export const ShowcaseBundleSchema = z.object({
   techExplorer: TechExplorerContentSchema,
   propertyIntelligence: PropertyIntelligenceContentSchema,
   oracleWaveY: OracleWaveYContentSchema,
-  guelga: GuelgaContentSchema,
-  contracts: z.array(LoadedContractFileSchema).length(3),
+  contracts: z.array(LoadedContractFileSchema).length(2),
 });
 
 export type CommonContent = z.infer<typeof CommonContentSchema>;
 export type HeroContent = z.infer<typeof HeroContentSchema>;
 export type TechExplorerContent = z.infer<typeof TechExplorerContentSchema>;
-export type PropertyIntelligenceContent = z.infer<typeof PropertyIntelligenceContentSchema>;
+export type PropertyIntelligenceContent = z.infer<
+  typeof PropertyIntelligenceContentSchema
+>;
 export type OracleWaveYContent = z.infer<typeof OracleWaveYContentSchema>;
-export type GuelgaContent = z.infer<typeof GuelgaContentSchema>;
+export type DiagramNode = z.infer<typeof DiagramNodeSchema>;
 export type LoadedContractFile = z.infer<typeof LoadedContractFileSchema>;
 export type ShowcaseBundle = z.infer<typeof ShowcaseBundleSchema>;

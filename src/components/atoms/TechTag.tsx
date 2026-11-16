@@ -9,16 +9,14 @@ export interface TechTagProps {
   onClick?: () => void;
 }
 
-const activeBorderClasses: Record<SystemAccentKey, string> = {
-  pi: "border-system-pi bg-system-pi/15 text-fg",
-  oracle: "border-system-oracle bg-system-oracle/15 text-fg",
-  guelga: "border-system-guelga bg-system-guelga/15 text-fg",
+const activeClasses: Record<SystemAccentKey, string> = {
+  pi: "border-system-pi bg-system-pi text-on-accent shadow-sm",
+  oracle: "border-system-oracle bg-system-oracle text-on-accent shadow-sm",
 };
 
 const dotClasses: Record<SystemAccentKey, string> = {
   pi: "bg-system-pi",
   oracle: "bg-system-oracle",
-  guelga: "bg-system-guelga",
 };
 
 export function TechTag({
@@ -33,15 +31,18 @@ export function TechTag({
       onClick={onClick}
       aria-pressed={isActive}
       className={clsx(
-        "min-h-11 inline-flex items-center gap-2 rounded-lg border px-3 py-2 font-mono text-xs transition-colors duration-150 cursor-pointer text-left",
+        "min-h-11 inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm font-semibold transition-all duration-150 cursor-pointer text-left",
         isActive
-          ? activeBorderClasses[systemAccent]
-          : "border-border-strong bg-surface-1 text-fg-muted hover:text-fg hover:border-fg-muted"
+          ? activeClasses[systemAccent]
+          : "border-border-strong bg-card text-fg hover:border-fg-muted hover:bg-surface-1 shadow-xs"
       )}
     >
       <span
         aria-hidden="true"
-        className={clsx("h-2 w-2 rounded-full shrink-0", dotClasses[systemAccent])}
+        className={clsx(
+          "h-2 w-2 rounded-full shrink-0",
+          isActive ? "bg-on-accent" : dotClasses[systemAccent]
+        )}
       />
       <span>{label}</span>
     </button>

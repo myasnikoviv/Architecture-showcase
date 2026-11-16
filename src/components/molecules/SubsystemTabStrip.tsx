@@ -20,9 +20,8 @@ export interface SubsystemTabStripProps {
 }
 
 const activeTabMap: Record<SystemAccentKey, string> = {
-  pi: "border-system-pi bg-system-pi/15 text-fg",
-  oracle: "border-system-oracle bg-system-oracle/15 text-fg",
-  guelga: "border-system-guelga bg-system-guelga/15 text-fg",
+  pi: "border-system-pi bg-system-pi/10 text-fg shadow-xs",
+  oracle: "border-system-oracle bg-system-oracle/10 text-fg shadow-xs",
 };
 
 export function SubsystemTabStrip({
@@ -43,11 +42,7 @@ export function SubsystemTabStrip({
   };
 
   return (
-    <div
-      role="tablist"
-      aria-label={ariaLabel}
-      className="flex flex-wrap gap-2"
-    >
+    <div role="tablist" aria-label={ariaLabel} className="flex flex-wrap gap-2">
       {items.map((item, idx) => {
         const isActive = item.id === activeId;
         return (
@@ -59,14 +54,14 @@ export function SubsystemTabStrip({
             onClick={() => onChange(item.id)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
             className={clsx(
-              "min-h-11 inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-left transition-colors duration-150 cursor-pointer",
+              "min-h-11 inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-left transition-all duration-150 cursor-pointer",
               isActive
                 ? activeTabMap[accent]
-                : "border-border-strong bg-surface-1 text-fg-muted hover:text-fg hover:border-fg-muted"
+                : "border-border-strong bg-card text-fg-muted hover:text-fg hover:bg-surface-1"
             )}
           >
             <CodeToken tone={isActive ? accent : "default"}>{item.code}</CodeToken>
-            <span className="font-sans text-sm font-medium">{item.title}</span>
+            <span className="font-sans text-sm font-semibold">{item.title}</span>
           </button>
         );
       })}

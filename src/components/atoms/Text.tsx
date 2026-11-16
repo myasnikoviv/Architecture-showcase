@@ -8,10 +8,11 @@ export interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
 
 const variantClasses: Record<NonNullable<TextProps["variant"]>, string> = {
   lead: "font-sans text-base sm:text-lg leading-relaxed text-fg-muted",
-  body: "font-sans text-base leading-relaxed text-fg/90",
+  body: "font-sans text-base leading-relaxed text-fg",
   muted: "font-sans text-sm leading-relaxed text-fg-muted",
-  mono: "font-mono text-[13px] leading-snug text-fg-muted",
-  eyebrow: "font-mono text-xs uppercase tracking-[0.14em] font-medium text-accent-run",
+  mono: "font-mono text-xs leading-snug text-fg-muted",
+  eyebrow:
+    "font-display text-xs uppercase tracking-[0.12em] font-bold text-accent-run",
 };
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(

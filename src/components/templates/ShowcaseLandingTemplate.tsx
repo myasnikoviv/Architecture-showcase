@@ -1,7 +1,6 @@
 import React from "react";
 import {
   ContractInspectorDrawer,
-  GuelgaSection,
   HeroArchitectureSplit,
   InteractiveTechExplorer,
   OracleWaveYSection,
@@ -16,7 +15,7 @@ export interface ShowcaseLandingTemplateProps {
 }
 
 export function ShowcaseLandingTemplate({ bundle }: ShowcaseLandingTemplateProps) {
-  const { locale, common, hero, techExplorer, propertyIntelligence, oracleWaveY, guelga, contracts } =
+  const { locale, common, hero, techExplorer, propertyIntelligence, oracleWaveY, contracts } =
     bundle;
 
   return (
@@ -29,18 +28,14 @@ export function ShowcaseLandingTemplate({ bundle }: ShowcaseLandingTemplateProps
           locale={locale}
           content={propertyIntelligence}
           deepDiveLabel={common.nav.actions.openFullDeepDive}
+          detailsButtonLabel={common.nav.actions.readTechnicalDetails}
           showDeepDiveLink
         />
         <OracleWaveYSection
           locale={locale}
           content={oracleWaveY}
           deepDiveLabel={common.nav.actions.openFullDeepDive}
-          showDeepDiveLink
-        />
-        <GuelgaSection
-          locale={locale}
-          content={guelga}
-          deepDiveLabel={common.nav.actions.openFullDeepDive}
+          detailsButtonLabel={common.nav.actions.readTechnicalDetails}
           showDeepDiveLink
         />
         <ContractInspectorDrawer

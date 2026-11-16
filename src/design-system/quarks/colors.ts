@@ -1,32 +1,31 @@
-export const colors = {
-  surface: {
-    canvas: "#020617",
-    primary: "#0F172A",
-    secondary: "#1E293B",
-    card: "#0E1223",
-    muted: "#1A1E2F",
+export const showcasePalette = {
+  background: {
+    canvas: "#F8FAFC",
+    surface: "#F1F5F9",
+    surfaceHover: "#E2E8F0",
+    card: "#FFFFFF",
   },
-  text: {
-    primary: "#F8FAFC",
-    muted: "#94A3B8",
-    onAccent: "#0F172A",
+  ink: {
+    primary: "#0F172A",
+    secondary: "#475569",
+    inverse: "#FFFFFF",
   },
   border: {
-    subtle: "#1E293B",
-    strong: "#334155",
-    ring: "#38BDF8",
+    hairline: "#E2E8F0",
+    control: "#CBD5E1",
+    focus: "#2563EB",
   },
-  semantic: {
-    run: "#22C55E",
-    warn: "#F59E0B",
-    reject: "#EF4444",
+  status: {
+    primaryAction: "#2563EB",
+    verified: "#16A34A",
+    warning: "#D97706",
+    blocked: "#DC2626",
   },
-  systems: {
-    pi: "#6366F1",
-    oracle: "#06B6D4",
-    guelga: "#F59E0B",
+  projects: {
+    pi: "#4F46E5",
+    oracle: "#0284C7",
   },
 } as const;
 
-export type SystemAccentKey = keyof typeof colors.systems;
-export type SemanticTone = "run" | "warn" | "reject" | "neutral" | "pi" | "oracle" | "guelga";
+export type SystemAccentKey = keyof typeof showcasePalette.projects;
+export type SemanticTone = "run" | "pass" | "warn" | "reject" | "neutral" | "pi" | "oracle";

@@ -1,115 +1,41 @@
 {
-  "eyebrow": "SYSTEMS ARCHITECTURE · QUANTITATIVE ML · AI CONTEXT GOVERNANCE",
-  "headline": "Three private R&D systems, unpacked down to the data contracts, validation loops, and ML pipelines.",
-  "subheadline": "Commercial real-estate intelligence, quantitative time-series research, and proprietary design systems rarely ship as open-source repos. This showcase bridges that gap: explore the interactive architecture, animated execution flows, and sanitized JSON contracts behind Property Intelligence, Oracle & Wave Y (Trade Bot), and GÜELGA.",
+  "eyebrow": "AI, RAG & MACHINE LEARNING ARCHITECTURE SHOWCASE",
+  "headline": "How I Build Production AI, RAG & ML Systems",
+  "subheadline": "Built for recruiters and engineering leads: click any skill from your job description below to see an animated diagram of how it works inside my projects, with direct links to GitHub.",
   "ctas": {
-    "primary": "Explore System 01",
-    "secondary": "Filter by Technology",
-    "github": "Inspect Markdown & Schemas on GitHub",
+    "primary": "Match Skills to Architecture",
+    "secondary": "Explore Project Diagrams",
+    "github": "Open GitHub Showcase",
     "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/README.md"
   },
   "metrics": [
     {
       "id": "schemas",
-      "value": "200",
-      "label": "JSON Schema Contracts",
-      "detail": "Strict boundary & self-healing validation across Property Intelligence",
+      "value": "200+",
+      "label": "JSON Output Contracts",
+      "detail": "Prevents LLM hallucinations & silent schema drift",
       "systemId": "pi"
     },
     {
       "id": "tests",
       "value": "563",
-      "label": "Automated Test Files",
-      "detail": "pytest & unittest semantic conservation + spatial clearance lints",
+      "label": "Automated Pytest Suites",
+      "detail": "Verifies every pipeline stage and spatial rule",
       "systemId": "pi"
     },
     {
-      "id": "stages",
-      "value": "18",
-      "label": "Deterministic DAG Stages",
-      "detail": "Checkpointed SingleActionStage & ItemSequenceStage orchestration",
+      "id": "rag",
+      "value": "384-d",
+      "label": "Local Hybrid Vector RAG",
+      "detail": "Offline ONNX embeddings + Rust Tantivy BM25 search",
       "systemId": "pi"
     },
     {
-      "id": "features",
+      "id": "ml",
       "value": "30+",
-      "label": "Point-in-Time ML Features",
-      "detail": "LightGBM, UMAP & HDBSCAN validated with Purged Walk-Forward CV",
+      "label": "Engineered ML Features",
+      "detail": "LightGBM + UMAP/HDBSCAN with zero data leakage",
       "systemId": "oracle"
-    },
-    {
-      "id": "packages",
-      "value": "6",
-      "label": "React 19 Monorepo Packages",
-      "detail": "@guelga/* design system governed by L0-L5 retrieval gates",
-      "systemId": "guelga"
     }
-  ],
-  "dnaMap": {
-    "title": "Cross-System Engineering DNA",
-    "subtitle": "Select any architectural invariant to trace how all three systems enforce it in code.",
-    "hint": "Interactive Invariant Tracer",
-    "invariants": [
-      {
-        "id": "orchestration",
-        "label": "Deterministic Orchestration",
-        "description": "Probabilistic models operate strictly inside typed Python or TypeScript state machines rather than open outer loops.",
-        "systems": {
-          "pi": "18-Stage StageContract DAG (S01-S18) + CheckpointManager",
-          "oracle": "Unified TypeScript AST Decision Kernel (proc204 / proc206 parity)",
-          "guelga": "Ticketed Pipeline Stages across 11 Approval Gates"
-        }
-      },
-      {
-        "id": "contracts",
-        "label": "Fail-Closed Contracts",
-        "description": "Missing external records stay explicitly UNKNOWN/UNAVAILABLE and malformed payloads trigger deterministic repair or rejection.",
-        "systems": {
-          "pi": "200 JSON Schemas + SemanticConservationValidator + contract_repairs",
-          "oracle": "AJV BlockLogicManifest checks + fail-closed venue isolation",
-          "guelga": "L0-L5 Retrieval Policy gating generic skills & L6 noise"
-        }
-      },
-      {
-        "id": "provenance",
-        "label": "SHA-256 Provenance",
-        "description": "Every claim, binary asset, model weight file, or market dataset row traces back to an immutable cryptographic digest.",
-        "systems": {
-          "pi": "SHA-256 image/context manifests + Hugging Face ONNX blob verification",
-          "oracle": "Binance Vision archive digest pinning + PostgreSQL lineage ledger",
-          "guelga": "Font/asset SHA-256 verification & cmp -s byte-identical SVG checks"
-        }
-      },
-      {
-        "id": "evals",
-        "label": "Leakage-Free Offline Evals",
-        "description": "Offline regression harnesses block data leakage, measure facet ablation, and guard WCAG/visual regressions before deployment.",
-        "systems": {
-          "pi": "563 pytest suites + Typed Facet Retrieval Ablation Benchmarks",
-          "oracle": "Purged Walk-Forward CV (PURGE_4H_MS) + Episode-Overlap Runtime Assert",
-          "guelga": "Playwright multi-viewport renders + Axe-core WCAG + PDF audits"
-        }
-      }
-    ],
-    "systems": [
-      {
-        "id": "pi",
-        "code": "SYS-01",
-        "name": "Property Intelligence",
-        "anchor": "#property-intelligence"
-      },
-      {
-        "id": "oracle",
-        "code": "SYS-02",
-        "name": "Oracle & Wave Y",
-        "anchor": "#oracle-wave-y"
-      },
-      {
-        "id": "guelga",
-        "code": "SYS-03",
-        "name": "GÜELGA",
-        "anchor": "#guelga"
-      }
-    ]
-  }
+  ]
 }

@@ -1,10 +1,9 @@
 export { MetricStatCard, type MetricStatCardProps } from "./MetricStatCard";
-export { TechFilterGroup, type TechFilterGroupProps, type TechFilterItem } from "./TechFilterGroup";
 export { SubsystemTabStrip, type SubsystemTabStripProps, type SubsystemTabItem } from "./SubsystemTabStrip";
 export { DagStageNode, type DagStageNodeProps } from "./DagStageNode";
 export { EpistemicTierRow, type EpistemicTierRowProps } from "./EpistemicTierRow";
 export { FoldSplitBar, type FoldSplitBarProps } from "./FoldSplitBar";
-export { ContextLayerRow, type ContextLayerRowProps } from "./ContextLayerRow";
 export { GitHubArtifactLink, type GitHubArtifactLinkProps } from "./GitHubArtifactLink";
 export { ChartLegendToggle, type ChartLegendToggleProps, type MarkerShape } from "./ChartLegendToggle";
-export { QaGateItem, type QaGateItemProps } from "./QaGateItem";
+export { InteractiveDiagramNode, type InteractiveDiagramNodeProps } from "./InteractiveDiagramNode";
+export { SlideOverExplainerDrawer, type SlideOverExplainerDrawerProps } from "./SlideOverExplainerDrawer";
