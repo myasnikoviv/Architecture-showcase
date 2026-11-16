@@ -111,23 +111,6 @@ export const HeroContentSchema = z.object({
   eyebrow: z.string().min(1),
   headline: z.string().min(1),
   subheadline: z.string().min(1),
-  ctas: z.object({
-    primary: z.string().min(1),
-    secondary: z.string().min(1),
-    github: z.string().min(1),
-    githubUrl: z.string().url(),
-  }),
-  pillars: z
-    .array(
-      z.object({
-        id: z.string().min(1),
-        title: z.string().min(1),
-        detail: z.string().min(1),
-        icon: IconKeySchema,
-        systemId: SystemIdSchema,
-      })
-    )
-    .length(3),
 });
 
 export const TechExplorerContentSchema = z.object({
@@ -139,35 +122,18 @@ export const TechExplorerContentSchema = z.object({
       z.object({
         id: z.string().min(1),
         title: z.string().min(1),
-        description: z.string().min(1),
         icon: IconKeySchema,
-        skillIds: z.array(z.string().min(1)).min(1),
+        skills: z
+          .array(
+            z.object({
+              name: z.string().min(1),
+              projectTag: z.enum(["PI", "ML", "Both"]),
+            })
+          )
+          .min(1),
       })
     )
     .min(4),
-  pills: z
-    .array(
-      z.object({
-        id: z.string().min(1),
-        categoryId: z.string().min(1),
-        label: z.string().min(1),
-        projectLabel: z.string().min(1),
-        systemId: SystemIdSchema,
-        plainEnglishSummary: z.string().min(1),
-        flowNodes: z
-          .array(
-            z.object({
-              step: z.string().min(1),
-              title: z.string().min(1),
-              subtitle: z.string().min(1),
-              icon: IconKeySchema,
-            })
-          )
-          .length(4),
-        githubLinks: z.array(GitHubLinkSchema).min(1),
-      })
-    )
-    .min(5),
 });
 
 export const PropertyIntelligenceContentSchema = z.object({

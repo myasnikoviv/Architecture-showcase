@@ -1,326 +1,272 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { clsx } from "clsx";
-import { Icon, StatusPill, Text } from "@/components/atoms";
+import { Icon } from "@/components/atoms";
 
-const BEATS = [
-  {
-    id: "embargo",
-    step: "01",
-    label: "Leakage Shield",
-    title: "Block Future Data From Leaking Into Training",
-    caption:
-      "A strict time-embargo buffer separates training windows from test windows so ML models never peek at future market moves.",
-  },
-  {
-    id: "regimes",
-    step: "02",
-    label: "Regimes & ML",
-    title: "Group Market Regimes Before Scoring Signals",
-    caption:
-      "UMAP + HDBSCAN cluster market states into Trend, Range, or High-Volatility regimes before LightGBM scores calibrated probabilities.",
-  },
-  {
-    id: "tool-gate",
-    step: "03",
-    label: "Agent Risk Gate",
-    title: "Validate Every Agent Tool Call Against Hard Rules",
-    caption:
-      "Even without a consumer UI, agentic orchestration enforces deterministic risk and schema gates before any action can execute.",
-  },
-  {
-    id: "replay",
-    step: "04",
-    label: "1:1 Replay",
-    title: "Re-Run Any Past Decision Bit-for-Bit",
-    caption:
-      "Every approved state transition writes an immutable snapshot so historical replay, paper runs, and live execution behave identically.",
-  },
+const DURATION_MS = 12000;
+
+const CLUSTER_POINTS = [
+  { id: 1, x0: 18, y0: 22, x1: 22, y1: 24, group: "trend" },
+  { id: 2, x0: 76, y0: 66, x1: 28, y1: 28, group: "trend" },
+  { id: 3, x0: 44, y0: 72, x1: 20, y1: 32, group: "trend" },
+  { id: 4, x0: 62, y0: 20, x1: 72, y1: 26, group: "range" },
+  { id: 5, x0: 24, y0: 64, x1: 78, y1: 32, group: "range" },
+  { id: 6, x0: 82, y0: 34, x1: 74, y1: 22, group: "range" },
+  { id: 7, x0: 36, y0: 40, x1: 48, y1: 74, group: "noise" },
+  { id: 8, x0: 68, y0: 54, x1: 54, y1: 70, group: "noise" },
 ] as const;
 
 export function OracleAgenticMotionExplainer() {
-  const [beat, setBeat] = useState(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     if (!isPlaying) return;
-    const timer = window.setInterval(() => {
-      setBeat((prev) => (prev + 1) % BEATS.length);
-    }, 3600);
-    return () => window.clearInterval(timer);
+    let last = performance.now();
+    let rafId = 0;
+    const tick = (now: number) => {
+      const dt = now - last;
+      last = now;
+      setElapsedMs((prev) => (prev + dt) % DURATION_MS);
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, [isPlaying]);
 
-  const current = BEATS[beat];
+  const t = elapsedMs / 1000;
+  const progressPct = (elapsedMs / DURATION_MS) * 100;
+
+  const phase = t < 3 ? 0 : t < 6 ? 1 : t < 9 ? 2 : 3;
+  const phaseLabels = [
+    "1. Blocking future data leakage with a strict time embargo",
+    "2. Clustering market regimes (UMAP + HDBSCAN) & scoring with LightGBM",
+    "3. Gating agent tool calls against deterministic risk rules",
+    "4. Guaranteeing 1:1 identical Replay, Paper, and Live execution",
+  ];
+
+  const clustered = t >= 3.2;
+  const gateEvaluated = t >= 6.4;
+  const replayLocked = t >= 9.0;
 
   return (
-    <div className="rounded-2xl border border-system-oracle/25 bg-surface-1 p-4 sm:p-6 flex flex-col gap-4 overflow-hidden">
-      {/* Storyboard Header & Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <StatusPill label="HOW IT WORKS · ANIMATED WALKTHROUGH" tone="oracle" />
-          <span className="font-mono text-xs text-fg-muted">
-            Beat {current.step} / 04
+    <div className="rounded-2xl border border-system-oracle/25 bg-surface-1 p-4 sm:p-5 flex flex-col gap-4 overflow-hidden">
+      {/* Minimal Motion Header */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="h-2.5 w-2.5 rounded-full bg-system-oracle animate-pulse shrink-0" />
+          <span className="font-mono text-xs font-semibold text-system-oracle truncate">
+            {phaseLabels[phase]}
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsPlaying((p) => !p)}
-          className="min-h-9 inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-card px-3 py-1.5 font-sans text-xs font-semibold text-fg hover:bg-surface-2 transition-colors cursor-pointer"
-        >
-          <Icon name={isPlaying ? "pause" : "play"} size={13} />
-          <span>{isPlaying ? "Pause" : "Play"}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPlaying((p) => !p)}
+            className="min-h-8 inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-card px-2.5 py-1 font-sans text-xs font-semibold text-fg hover:bg-surface-2 transition-colors cursor-pointer"
+          >
+            <Icon name={isPlaying ? "pause" : "play"} size={12} />
+            <span>{isPlaying ? "Pause" : "Play"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setElapsedMs(0);
+              setIsPlaying(true);
+            }}
+            className="min-h-8 inline-flex items-center gap-1 rounded-lg border border-border-strong bg-card px-2.5 py-1 font-sans text-xs font-semibold text-fg-muted hover:text-fg transition-colors cursor-pointer"
+            aria-label="Replay animation"
+          >
+            <Icon name="reset" size={12} />
+          </button>
+        </div>
       </div>
 
-      {/* Beat Selector Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {BEATS.map((item, idx) => {
-          const active = idx === beat;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => {
-                setBeat(idx);
-                setIsPlaying(false);
-              }}
-              className={clsx(
-                "min-w-0 rounded-xl border px-3 py-2 text-left transition-all cursor-pointer flex items-center gap-2",
-                active
-                  ? "border-system-oracle bg-card shadow-xs ring-1 ring-system-oracle/30"
-                  : "border-border-subtle bg-card/60 hover:bg-card"
-              )}
-            >
+      {/* Continuous Visual Storyboard Canvas */}
+      <div className="rounded-xl border border-border-subtle bg-card p-4 sm:p-5">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 items-stretch">
+          {/* STAGE 1: Time-Series + Embargo Wall */}
+          <div className="rounded-xl border border-border-subtle bg-surface-1 p-3 flex flex-col justify-between gap-2 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-display text-xs font-bold text-fg">
+                Leakage Shield
+              </span>
+              <span className="font-mono text-[10px] text-warn font-semibold">
+                Embargo Gap
+              </span>
+            </div>
+
+            <div className="flex items-end gap-1 h-16 px-1">
+              {[40, 58, 48, 72].map((h, i) => (
+                <div
+                  key={i}
+                  style={{ height: `${h}%` }}
+                  className="flex-1 rounded-t bg-system-oracle/70"
+                />
+              ))}
+              <motion.div
+                animate={{ scaleY: phase >= 0 ? 1 : 0.4 }}
+                className="w-2 h-full rounded bg-warn/80 mx-1 origin-top"
+                title="48h Embargo Wall"
+              />
+              {[54, 66, 60].map((h, i) => (
+                <div
+                  key={i}
+                  style={{ height: `${h}%` }}
+                  className="flex-1 rounded-t bg-fg-muted/25 border border-dashed border-fg-muted/40"
+                />
+              ))}
+            </div>
+
+            <span className="font-mono text-[10px] text-fg-muted">
+              Past Train | Blocked Future
+            </span>
+          </div>
+
+          {/* STAGE 2: UMAP + HDBSCAN Particle Clustering */}
+          <div className="rounded-xl border border-border-subtle bg-surface-1 p-3 flex flex-col justify-between gap-2 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-display text-xs font-bold text-fg">
+                Regime Discovery
+              </span>
+              <span className="font-mono text-[10px] text-system-oracle font-semibold">
+                {clustered ? "3 Regimes" : "Raw Features"}
+              </span>
+            </div>
+
+            <svg viewBox="0 0 100 90" className="w-full h-16 rounded-lg bg-card border border-border-subtle">
+              {CLUSTER_POINTS.map((pt) => {
+                const cx = clustered ? pt.x1 : pt.x0;
+                const cy = clustered ? pt.y1 : pt.y0;
+                const fill = !clustered
+                  ? "var(--color-fg-muted)"
+                  : pt.group === "trend"
+                  ? "var(--color-system-oracle)"
+                  : pt.group === "range"
+                  ? "var(--color-pass)"
+                  : "var(--color-warn)";
+                return (
+                  <circle
+                    key={pt.id}
+                    cx={cx}
+                    cy={cy}
+                    r="4.2"
+                    fill={fill}
+                    style={{ transition: "all 0.9s cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  />
+                );
+              })}
+            </svg>
+
+            <span className="font-mono text-[10px] text-fg-muted">
+              UMAP + HDBSCAN -&gt; LightGBM
+            </span>
+          </div>
+
+          {/* STAGE 3: Agent Tool-Call Risk Gate */}
+          <div className="rounded-xl border border-border-subtle bg-surface-1 p-3 flex flex-col justify-between gap-2 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-display text-xs font-bold text-fg">
+                Agent Risk Gate
+              </span>
+              <span className="font-mono text-[10px] text-fg-muted">
+                LangGraph + AJV
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <div
+                className={clsx(
+                  "rounded-md border px-2 py-1 font-mono text-[10px] flex items-center justify-between transition-all duration-300",
+                  gateEvaluated
+                    ? "border-reject/40 bg-reject/10 text-reject"
+                    : "border-border-subtle bg-card text-fg-muted"
+                )}
+              >
+                <span>order(5x)</span>
+                <span>{gateEvaluated ? "BLOCKED" : "check"}</span>
+              </div>
+              <div
+                className={clsx(
+                  "rounded-md border px-2 py-1 font-mono text-[10px] flex items-center justify-between transition-all duration-300",
+                  gateEvaluated
+                    ? "border-pass/40 bg-pass/10 text-pass"
+                    : "border-border-subtle bg-card text-fg-muted"
+                )}
+              >
+                <span>signal(1x)</span>
+                <span>{gateEvaluated ? "APPROVED" : "check"}</span>
+              </div>
+            </div>
+
+            <span className="font-mono text-[10px] text-fg-muted">
+              Hard limits stop unsafe calls
+            </span>
+          </div>
+
+          {/* STAGE 4: 1:1 Deterministic Replay */}
+          <motion.div
+            animate={{
+              borderColor: replayLocked
+                ? "var(--color-pass)"
+                : "var(--color-border-subtle)",
+            }}
+            className="rounded-xl border bg-surface-1 p-3 flex flex-col justify-between gap-2 min-w-0"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-display text-xs font-bold text-fg">
+                1:1 Parity
+              </span>
               <span
                 className={clsx(
-                  "font-mono text-[11px] font-bold px-1.5 py-0.5 rounded shrink-0",
-                  active
-                    ? "bg-system-oracle text-on-accent"
+                  "rounded-full px-2 py-0.5 font-mono text-[10px] font-bold",
+                  replayLocked
+                    ? "bg-pass/15 text-pass"
                     : "bg-surface-2 text-fg-muted"
                 )}
               >
-                {item.step}
+                {replayLocked ? "IDENTICAL" : "SYNCING"}
               </span>
-              <span className="font-sans text-xs font-semibold text-fg truncate">
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
+            </div>
+
+            <div className="flex flex-col gap-1 font-mono text-[10px]">
+              {["Replay", "Paper", "Live"].map((env) => (
+                <div
+                  key={env}
+                  className="flex items-center justify-between rounded bg-card px-2 py-0.5 border border-border-subtle"
+                >
+                  <span className="text-fg">{env}</span>
+                  <span className={replayLocked ? "text-pass" : "text-fg-muted"}>
+                    #9f4ac21
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <span className="font-mono text-[10px] text-fg-muted">
+              Bit-for-bit reproducible runs
+            </span>
+          </motion.div>
+        </div>
       </div>
 
-      {/* Animated Stage Canvas */}
-      <div className="rounded-xl border border-border-subtle bg-card p-4 sm:p-5 min-h-[230px] flex flex-col justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h3 className="font-display text-base sm:text-lg font-bold text-fg">
-            {current.title}
-          </h3>
-          <Text variant="muted" className="text-xs sm:text-sm max-w-3xl">
-            {current.caption}
-          </Text>
-        </div>
-
-        <AnimatePresence mode="wait">
-          {beat === 0 && (
-            <motion.div
-              key="beat-embargo"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-[1.2fr_auto_1fr] gap-3 items-center"
-            >
-              <div className="rounded-xl border border-border-subtle bg-surface-1 p-3.5 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-fg-muted">
-                    TRAIN WINDOW (PAST ONLY)
-                  </span>
-                  <StatusPill label="Leakage-Free" tone="pass" />
-                </div>
-                <div className="grid grid-cols-6 gap-1.5 items-end h-14">
-                  {[38, 52, 44, 68, 56, 74].map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ scaleY: 0 }}
-                      animate={{ scaleY: 1 }}
-                      transition={{ delay: i * 0.06 }}
-                      style={{ height: `${h}%` }}
-                      className="rounded-t bg-system-oracle/75 origin-bottom"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <motion.div
-                animate={{ scale: [1, 1.06, 1] }}
-                transition={{ repeat: Infinity, duration: 1.8 }}
-                className="rounded-xl border border-warn/40 bg-warn/10 px-3 py-2.5 flex flex-col items-center gap-1 text-center"
-              >
-                <Icon name="lock" size={16} className="text-warn" />
-                <span className="font-mono text-[11px] font-bold text-warn">
-                  EMBARGO GAP
-                </span>
-              </motion.div>
-
-              <div className="rounded-xl border border-border-subtle bg-surface-1 p-3.5 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-fg-muted">
-                    OUT-OF-SAMPLE TEST
-                  </span>
-                  <StatusPill label="Unseen Future" tone="oracle" />
-                </div>
-                <div className="grid grid-cols-4 gap-1.5 items-end h-14">
-                  {[48, 62, 58, 70].map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ scaleY: 0 }}
-                      animate={{ scaleY: 1 }}
-                      transition={{ delay: 0.25 + i * 0.06 }}
-                      style={{ height: `${h}%` }}
-                      className="rounded-t bg-pass/75 origin-bottom"
-                    />
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {beat === 1 && (
-            <motion.div
-              key="beat-regimes"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-3"
-            >
-              {[
-                { name: "Trend Regime", score: "78% Conf", width: "w-4/5", tone: "oracle" as const },
-                { name: "Mean-Reverting", score: "64% Conf", width: "w-2/3", tone: "pass" as const },
-                { name: "High-Vol Noise", score: "Hold / Skip", width: "w-1/3", tone: "warn" as const },
-              ].map((cluster, idx) => (
-                <motion.div
-                  key={cluster.name}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="rounded-xl border border-border-subtle bg-surface-1 p-3.5 flex flex-col gap-2.5"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-display text-sm font-bold text-fg">
-                      {cluster.name}
-                    </span>
-                    <StatusPill label={cluster.score} tone={cluster.tone} />
-                  </div>
-                  <div className="h-2 w-full rounded-full bg-surface-2 overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: "100%" }}
-                      transition={{ delay: 0.15 + idx * 0.1, duration: 0.5 }}
-                      className={clsx(
-                        "h-full rounded-full",
-                        cluster.width,
-                        cluster.tone === "oracle"
-                          ? "bg-system-oracle"
-                          : cluster.tone === "pass"
-                          ? "bg-pass"
-                          : "bg-warn"
-                      )}
-                    />
-                  </div>
-                  <span className="font-mono text-[11px] text-fg-muted">
-                    UMAP + HDBSCAN -&gt; LightGBM
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          {beat === 2 && (
-            <motion.div
-              key="beat-toolgate"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-            >
-              <motion.div
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="rounded-xl border border-reject/30 bg-reject/5 p-3.5 flex flex-col gap-2"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono text-xs font-bold text-reject">
-                    tool: submit_order(size=5x)
-                  </span>
-                  <StatusPill label="BLOCKED BY GATE" tone="reject" />
-                </div>
-                <span className="font-sans text-xs text-fg-muted">
-                  Violates max exposure limit and fails regime check. Stopped before execution.
-                </span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.12 }}
-                className="rounded-xl border border-pass/30 bg-pass/5 p-3.5 flex flex-col gap-2"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono text-xs font-bold text-pass">
-                    tool: emit_signal(size=1x)
-                  </span>
-                  <StatusPill label="APPROVED" tone="pass" />
-                </div>
-                <span className="font-sans text-xs text-fg-muted">
-                  Passes AJV schema contract, risk budget, and compiled TypeScript AST checks.
-                </span>
-              </motion.div>
-            </motion.div>
-          )}
-
-          {beat === 3 && (
-            <motion.div
-              key="beat-replay"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center"
-            >
-              {[
-                { mode: "Historical Replay", hash: "sha256:9f4a...c21", icon: "reset" as const },
-                { mode: "Paper Simulation", hash: "sha256:9f4a...c21", icon: "cpu" as const },
-                { mode: "Live Runtime", hash: "sha256:9f4a...c21", icon: "shieldCheck" as const },
-              ].map((env, i) => (
-                <motion.div
-                  key={env.mode}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="rounded-xl border border-system-oracle/30 bg-system-oracle/5 p-3.5 flex flex-col gap-2"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-display text-sm font-bold text-fg">
-                      {env.mode}
-                    </span>
-                    <Icon name={env.icon} size={15} className="text-system-oracle" />
-                  </div>
-                  <span className="font-mono text-xs text-pass font-semibold">
-                    {env.hash}
-                  </span>
-                  <span className="font-sans text-[11px] text-fg-muted">
-                    Identical inputs produce identical decisions.
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Continuous Timeline Scrubber */}
+      <div
+        className="h-1.5 w-full rounded-full bg-surface-2 overflow-hidden cursor-pointer"
+        onClick={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+          setElapsedMs(ratio * DURATION_MS);
+        }}
+        title="Click anywhere to scrub timeline"
+      >
+        <div
+          style={{ width: `${progressPct}%` }}
+          className="h-full bg-system-oracle transition-none"
+        />
       </div>
     </div>
   );

@@ -1,217 +1,64 @@
 {
-  "eyebrow": "TECHNICAL SKILLS BY CATEGORY",
-  "heading": "Core Skills Used Across Both Systems",
-  "intro": "Browse by engineering category or click any technology pill to inspect its live data flow, plain-English role, and direct GitHub source links.",
+  "eyebrow": "SKILLS MATRIX",
+  "heading": "Core Stack Across Both Projects",
+  "intro": "Every technology below is used in production code across Property Intelligence (PI) and Trade Bot / Oracle ML (ML).",
   "categories": [
     {
-      "id": "all",
-      "title": "All Skills",
-      "description": "Every core AI, ML, database, backend, and frontend technology demonstrated in the two projects.",
-      "icon": "layers",
-      "skillIds": ["langgraph", "rag-vectors", "lightgbm", "umap-hdbscan", "data-lakehouse", "python-fastapi", "ts-react-flow"]
-    },
-    {
-      "id": "ml-training",
-      "title": "Model Training & ML",
-      "description": "Gradient-boosted trees, dimensionality reduction, density clustering, and leakage-free time-series validation.",
-      "icon": "brain",
-      "skillIds": ["lightgbm", "umap-hdbscan"]
-    },
-    {
-      "id": "databases",
-      "title": "Vector & Specialized Databases",
-      "description": "Local ONNX vector indexes, Rust Tantivy BM25 search, DuckDB geospatial SQL, Parquet, PostgreSQL, and Redis.",
-      "icon": "database",
-      "skillIds": ["rag-vectors", "data-lakehouse"]
-    },
-    {
-      "id": "agentic-llm",
-      "title": "Agentic Orchestration & LLM",
-      "description": "Multi-step state graphs, structured tool calling, vision extraction, and schema repair loops.",
+      "id": "agents-llm",
+      "title": "LLMs, Agents & Vision",
       "icon": "workflow",
-      "skillIds": ["langgraph"]
+      "skills": [
+        { "name": "LangGraph", "projectTag": "Both" },
+        { "name": "LangChain", "projectTag": "Both" },
+        { "name": "Gemini Vision API", "projectTag": "PI" },
+        { "name": "Tool Calling & Risk Gates", "projectTag": "ML" },
+        { "name": "JSON Schema Repair", "projectTag": "PI" }
+      ]
     },
     {
-      "id": "backend-pipelines",
-      "title": "Backend & Data Pipelines",
-      "description": "FastAPI services, Pydantic/JSON Schema contracts, checkpoint recovery, and automated verification.",
-      "icon": "server",
-      "skillIds": ["python-fastapi"]
+      "id": "rag-search",
+      "title": "RAG & Vector Search",
+      "icon": "search",
+      "skills": [
+        { "name": "Local ONNX Embeddings (384-d)", "projectTag": "PI" },
+        { "name": "Rust Tantivy BM25", "projectTag": "PI" },
+        { "name": "Reciprocal Rank Fusion", "projectTag": "PI" },
+        { "name": "Beam Search Ranking", "projectTag": "PI" }
+      ]
     },
     {
-      "id": "frontend-viz",
-      "title": "Frontend & Visual Compilers",
-      "description": "React 19, TypeScript 5, visual node-graph editors, and deterministic AST compilers.",
+      "id": "ml-clustering",
+      "title": "Machine Learning & Clustering",
+      "icon": "brain",
+      "skills": [
+        { "name": "LightGBM", "projectTag": "ML" },
+        { "name": "Scikit-Learn", "projectTag": "ML" },
+        { "name": "UMAP", "projectTag": "ML" },
+        { "name": "HDBSCAN", "projectTag": "ML" },
+        { "name": "Purged Walk-Forward CV", "projectTag": "ML" }
+      ]
+    },
+    {
+      "id": "databases-data",
+      "title": "Databases & Data Pipelines",
+      "icon": "database",
+      "skills": [
+        { "name": "DuckDB + GeoParquet", "projectTag": "Both" },
+        { "name": "PostgreSQL", "projectTag": "ML" },
+        { "name": "Redis", "projectTag": "ML" },
+        { "name": "Overture Maps & Catastro", "projectTag": "PI" }
+      ]
+    },
+    {
+      "id": "backend-frontend",
+      "title": "Backend, Compilers & UI",
       "icon": "layoutGrid",
-      "skillIds": ["ts-react-flow"]
-    }
-  ],
-  "pills": [
-    {
-      "id": "langgraph",
-      "categoryId": "agentic-llm",
-      "label": "LangGraph & LangChain",
-      "projectLabel": "Agents-system + Property Intelligence",
-      "systemId": "pi",
-      "plainEnglishSummary": "Orchestrates multi-step AI agents using explicit state graphs, human approval pauses, and automatic retries when an LLM returns invalid JSON.",
-      "flowNodes": [
-        { "step": "01", "title": "StateGraph Input", "subtitle": "Typed state & context", "icon": "workflow" },
-        { "step": "02", "title": "Agent / Tool Call", "subtitle": "LangChain + Gemini/OpenAI", "icon": "brain" },
-        { "step": "03", "title": "Human / Schema Gate", "subtitle": "Interrupt or auto-repair", "icon": "shieldCheck" },
-        { "step": "04", "title": "PostgreSQL / Ledger", "subtitle": "Resumable checkpoint", "icon": "database" }
-      ],
-      "githubLinks": [
-        {
-          "label": "Open Agents-system (LangGraph Repo)",
-          "path": "github.com/myasnikoviv/Agents-system",
-          "url": "https://github.com/myasnikoviv/Agents-system"
-        },
-        {
-          "label": "See 18-Stage DAG Orchestrator Diagram",
-          "path": "case-studies/01-...md#2-diagram-1-18-stage-deterministic-dag-orchestrator-s01s18",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#2-diagram-1-18-stage-deterministic-dag-orchestrator-s01s18"
-        }
-      ]
-    },
-    {
-      "id": "rag-vectors",
-      "categoryId": "databases",
-      "label": "RAG & Vector Embeddings",
-      "projectLabel": "Property Intelligence",
-      "systemId": "pi",
-      "plainEnglishSummary": "Combines exact keyword search (Tantivy BM25) with semantic vector search (local ONNX Multilingual-E5 384-d embeddings) inside Python with zero external vector database fees.",
-      "flowNodes": [
-        { "step": "01", "title": "Typed Query", "subtitle": "Material & spatial cues", "icon": "search" },
-        { "step": "02", "title": "Tantivy BM25", "subtitle": "Exact keyword ranking", "icon": "layers" },
-        { "step": "03", "title": "ONNX E5 Vectors", "subtitle": "384-d cosine similarity", "icon": "cpu" },
-        { "step": "04", "title": "RRF + Beam Search", "subtitle": "Ranked room matches", "icon": "sparkles" }
-      ],
-      "githubLinks": [
-        {
-          "label": "See Hybrid RAG & Beam Search Diagram",
-          "path": "case-studies/01-...md#4-diagram-3-zero-network-local-hybrid-retrieval--ensemble-optimizer",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#4-diagram-3-zero-network-local-hybrid-retrieval--ensemble-optimizer"
-        },
-        {
-          "label": "Inspect Hybrid Index JSON Schema",
-          "path": "contracts/hybrid-retrieval-bundle.schema.json",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/hybrid-retrieval-bundle.schema.json"
-        }
-      ]
-    },
-    {
-      "id": "lightgbm",
-      "categoryId": "ml-training",
-      "label": "LightGBM & Scikit-Learn",
-      "projectLabel": "Trade Bot (Oracle ML)",
-      "systemId": "oracle",
-      "plainEnglishSummary": "Trains gradient-boosted trees (LightGBM) and benchmarks them against calibrated Scikit-Learn linear models using strict time-split validation so future data never leaks into training.",
-      "flowNodes": [
-        { "step": "01", "title": "Engineered Features", "subtitle": "Parquet & PostgreSQL", "icon": "database" },
-        { "step": "02", "title": "Purged Time Split", "subtitle": "Leakage embargo gap", "icon": "sliders" },
-        { "step": "03", "title": "LightGBM vs Linear", "subtitle": "Challenger benchmark", "icon": "brain" },
-        { "step": "04", "title": "AUC & Calibration", "subtitle": "Out-of-sample check", "icon": "shieldCheck" }
-      ],
-      "githubLinks": [
-        {
-          "label": "See Purged Walk-Forward ML Diagram",
-          "path": "case-studies/02-...md#3-diagram-2-oracle-purged-walk-forward--episode-grouped-validation-pipeline",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#3-diagram-2-oracle-purged-walk-forward--episode-grouped-validation-pipeline"
-        }
-      ]
-    },
-    {
-      "id": "umap-hdbscan",
-      "categoryId": "ml-training",
-      "label": "UMAP & HDBSCAN Clustering",
-      "projectLabel": "Trade Bot (Wave Y)",
-      "systemId": "oracle",
-      "plainEnglishSummary": "Finds hidden market patterns automatically across multi-horizon price and order-flow signals using UMAP dimensionality reduction and HDBSCAN density clustering.",
-      "flowNodes": [
-        { "step": "01", "title": "In-Sample Scaling", "subtitle": "StandardScaler fit", "icon": "sliders" },
-        { "step": "02", "title": "UMAP Projection", "subtitle": "Non-linear 2D manifold", "icon": "layers" },
-        { "step": "03", "title": "HDBSCAN Clusters", "subtitle": "Regimes + noise filter", "icon": "layoutGrid" },
-        { "step": "04", "title": "Feature Ablation", "subtitle": "Tests cluster stability", "icon": "shieldCheck" }
-      ],
-      "githubLinks": [
-        {
-          "label": "See Wave Y Clustering Diagram",
-          "path": "case-studies/02-...md#4-diagram-3-wave-y-unsupervised-market-regime-discovery",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#4-diagram-3-wave-y-unsupervised-market-regime-discovery"
-        }
-      ]
-    },
-    {
-      "id": "python-fastapi",
-      "categoryId": "backend-pipelines",
-      "label": "Python, FastAPI & Schemas",
-      "projectLabel": "Property Intelligence + Agents-system",
-      "systemId": "pi",
-      "plainEnglishSummary": "Powers high-reliability backend pipelines with Pydantic/JSON Schema contracts, checkpoint recovery, and automated pytest verification suites.",
-      "flowNodes": [
-        { "step": "01", "title": "FastAPI / CLI Entry", "subtitle": "Typed request contract", "icon": "server" },
-        { "step": "02", "title": "Stage Orchestrator", "subtitle": "Resumable checkpoints", "icon": "workflow" },
-        { "step": "03", "title": "Schema Validator", "subtitle": "Strict JSON contracts", "icon": "shieldCheck" },
-        { "step": "04", "title": "JSON View-Model", "subtitle": "SHA-256 verified output", "icon": "layoutGrid" }
-      ],
-      "githubLinks": [
-        {
-          "label": "See Anti-Hallucination Validator Diagram",
-          "path": "case-studies/01-...md#3-diagram-2-6-tier-epistemic-hierarchy--semantic-conservation-gate",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#3-diagram-2-6-tier-epistemic-hierarchy--semantic-conservation-gate"
-        },
-        {
-          "label": "Inspect Epistemic Output Schema",
-          "path": "contracts/epistemic-forensic-proposition.schema.json",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/contracts/epistemic-forensic-proposition.schema.json"
-        }
-      ]
-    },
-    {
-      "id": "data-lakehouse",
-      "categoryId": "databases",
-      "label": "DuckDB, Parquet, PostgreSQL & Redis",
-      "projectLabel": "Both Systems",
-      "systemId": "oracle",
-      "plainEnglishSummary": "Queries multi-gigabyte Parquet archives and Overture geospatial maps directly with DuckDB SQL, while storing transactional state in PostgreSQL and job queues in Redis.",
-      "flowNodes": [
-        { "step": "01", "title": "Parquet & Maps", "subtitle": "SHA-256 pinned datasets", "icon": "database" },
-        { "step": "02", "title": "DuckDB Spatial/SQL", "subtitle": "Fast columnar joins", "icon": "cpu" },
-        { "step": "03", "title": "PostgreSQL State", "subtitle": "Dataset rows & ledgers", "icon": "server" },
-        { "step": "04", "title": "Redis Queues", "subtitle": "Streams & optimizer jobs", "icon": "workflow" }
-      ],
-      "githubLinks": [
-        {
-          "label": "See Hybrid Lakehouse Diagram",
-          "path": "case-studies/02-...md#2-diagram-1-end-to-end-hybrid-platform-architecture",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#2-diagram-1-end-to-end-hybrid-platform-architecture"
-        },
-        {
-          "label": "See Geospatial OSINT Pipeline",
-          "path": "case-studies/01-...md#5-diagram-4-geospatial-osint-computer-vision--decoupled-react-19-ui",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/01-property-intelligence-geospatial-ai-pipeline.md#5-diagram-4-geospatial-osint-computer-vision--decoupled-react-19-ui"
-        }
-      ]
-    },
-    {
-      "id": "ts-react-flow",
-      "categoryId": "frontend-viz",
-      "label": "TypeScript, React & Visual DAGs",
-      "projectLabel": "Trade Bot + Property Intelligence",
-      "systemId": "oracle",
-      "plainEnglishSummary": "Builds visual drag-and-drop strategy editors in React Flow (@xyflow/react) that compile into deterministic TypeScript execution graphs checked by AJV schemas.",
-      "flowNodes": [
-        { "step": "01", "title": "React Flow Canvas", "subtitle": "@xyflow/react + Dagre", "icon": "layoutGrid" },
-        { "step": "02", "title": "AJV Schema Check", "subtitle": "Block logic manifest", "icon": "shieldCheck" },
-        { "step": "03", "title": "TypeScript Compiler", "subtitle": "Deterministic AST", "icon": "cpu" },
-        { "step": "04", "title": "1:1 Execution", "subtitle": "Replay = Paper = Live", "icon": "workflow" }
-      ],
-      "githubLinks": [
-        {
-          "label": "See Visual DAG Compiler Diagram",
-          "path": "case-studies/02-...md#5-diagram-4-visual-dag-compiler-execution-parity--multi-agent-governance",
-          "url": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/case-studies/02-oracle-quantitative-ml-and-replay-platform.md#5-diagram-4-visual-dag-compiler-execution-parity--multi-agent-governance"
-        }
+      "skills": [
+        { "name": "Python 3.12 / FastAPI", "projectTag": "Both" },
+        { "name": "TypeScript 5", "projectTag": "Both" },
+        { "name": "React 19 / Next.js 15", "projectTag": "Both" },
+        { "name": "React Flow (@xyflow/react)", "projectTag": "ML" },
+        { "name": "Pydantic & AJV Contracts", "projectTag": "Both" }
       ]
     }
   ]

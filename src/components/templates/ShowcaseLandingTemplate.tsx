@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  ContractInspectorDrawer,
   HeroArchitectureSplit,
   InteractiveTechExplorer,
-  OracleWaveYSection,
-  PropertyIntelligenceSection,
+  OracleAgenticOverview,
+  PropertyIntelligenceOverview,
   ShowcaseFooter,
   ShowcaseHeader,
 } from "@/components/organisms";
@@ -15,7 +14,7 @@ export interface ShowcaseLandingTemplateProps {
 }
 
 export function ShowcaseLandingTemplate({ bundle }: ShowcaseLandingTemplateProps) {
-  const { locale, common, hero, techExplorer, propertyIntelligence, oracleWaveY, contracts } =
+  const { locale, common, hero, techExplorer, propertyIntelligence, oracleWaveY } =
     bundle;
 
   return (
@@ -24,24 +23,15 @@ export function ShowcaseLandingTemplate({ bundle }: ShowcaseLandingTemplateProps
       <main className="flex-1">
         <HeroArchitectureSplit hero={hero} />
         <InteractiveTechExplorer content={techExplorer} />
-        <PropertyIntelligenceSection
+        <PropertyIntelligenceOverview
           locale={locale}
           content={propertyIntelligence}
           deepDiveLabel={common.nav.actions.openFullDeepDive}
-          detailsButtonLabel={common.nav.actions.readTechnicalDetails}
-          showDeepDiveLink
         />
-        <OracleWaveYSection
+        <OracleAgenticOverview
           locale={locale}
           content={oracleWaveY}
           deepDiveLabel={common.nav.actions.openFullDeepDive}
-          detailsButtonLabel={common.nav.actions.readTechnicalDetails}
-          showDeepDiveLink
-        />
-        <ContractInspectorDrawer
-          sectionMeta={common.contractsSection}
-          contracts={contracts}
-          actions={common.nav.actions}
         />
       </main>
       <ShowcaseFooter footer={common.footer} actions={common.nav.actions} />

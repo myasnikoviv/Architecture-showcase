@@ -1,34 +1,5 @@
 {
-  "eyebrow": "AI, RAG & MACHINE LEARNING ARCHITECTURE SHOWCASE",
-  "headline": "How I Build Production AI, RAG & ML Systems",
-  "subheadline": "Explore the skills, data pipelines, and visual system flows behind two production-grade R&D projects, with direct links to inspect the contracts and documentation on GitHub.",
-  "ctas": {
-    "primary": "Browse Skills by Category",
-    "secondary": "Watch System Animations",
-    "github": "Open GitHub Showcase",
-    "githubUrl": "https://github.com/myasnikoviv/Architecture-showcase/blob/main/README.md"
-  },
-  "pillars": [
-    {
-      "id": "contracts",
-      "title": "Strict Data Contracts & Repair",
-      "detail": "Every LLM output and vision extraction is validated against typed schemas so ungrounded claims are blocked before reaching users.",
-      "icon": "shieldCheck",
-      "systemId": "pi"
-    },
-    {
-      "id": "hybrid-rag",
-      "title": "Local-First Hybrid Search & Geospatial",
-      "detail": "Combines offline ONNX vector embeddings, Rust Tantivy BM25 keyword search, and DuckDB geospatial joins with zero cloud lock-in.",
-      "icon": "database",
-      "systemId": "pi"
-    },
-    {
-      "id": "leakage-free",
-      "title": "Agentic Control & Deterministic Replay",
-      "detail": "Time-embargoed ML training, explicit tool-calling risk gates, and bit-for-bit replay harnesses so every automated decision is auditable.",
-      "icon": "workflow",
-      "systemId": "oracle"
-    }
-  ]
+  "eyebrow": "AI, RAG & MACHINE LEARNING PORTFOLIO",
+  "headline": "Two Production AI & ML Systems, Explained Visually",
+  "subheadline": "A concise walkthrough for hiring managers and engineering leads: match my core stack to your role, watch how each system works in motion, and inspect the deep-dive diagrams or GitHub contracts."
 }

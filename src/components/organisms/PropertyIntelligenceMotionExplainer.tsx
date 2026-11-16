@@ -1,370 +1,303 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { clsx } from "clsx";
-import { Icon, StatusPill, Text } from "@/components/atoms";
+import { Icon } from "@/components/atoms";
 
-const BEATS = [
-  {
-    id: "collect",
-    step: "01",
-    label: "Collect Sources",
-    title: "Gather Photos, Maps & Official Registries",
-    caption:
-      "Pulls listing photos, Overture Maps buildings, Google Places POIs, and Spanish Catastro records into one DuckDB geospatial hub.",
-  },
-  {
-    id: "vision",
-    step: "02",
-    label: "Vision & Rooms",
-    title: "Scan Room Photos & Camera Geometry",
-    caption:
-      "Gemini Vision tags room types, estimates camera angle and natural light, and drops blurry or duplicate frames before indexing.",
-  },
-  {
-    id: "hybrid-rag",
-    step: "03",
-    label: "Hybrid RAG",
-    title: "Fuse Keyword + Vector Interior Search",
-    caption:
-      "Splits a query into exact Tantivy BM25 keyword tokens and local 384-d ONNX vector embeddings, then merges scores with RRF.",
-  },
-  {
-    id: "guard",
-    step: "04",
-    label: "Hallucination Gate",
-    title: "Block Unsupported Claims Before Output",
-    caption:
-      "Every statement must cite a photo or registry ID. Unsupported claims are rejected by the schema gate before reaching the UI.",
-  },
-] as const;
+const DURATION_MS = 12000;
 
 export function PropertyIntelligenceMotionExplainer() {
-  const [beat, setBeat] = useState(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     if (!isPlaying) return;
-    const timer = window.setInterval(() => {
-      setBeat((prev) => (prev + 1) % BEATS.length);
-    }, 3600);
-    return () => window.clearInterval(timer);
+    let last = performance.now();
+    let rafId = 0;
+    const tick = (now: number) => {
+      const dt = now - last;
+      last = now;
+      setElapsedMs((prev) => (prev + dt) % DURATION_MS);
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, [isPlaying]);
 
-  const current = BEATS[beat];
+  const t = elapsedMs / 1000; // 0..12s
+  const progressPct = (elapsedMs / DURATION_MS) * 100;
+
+  // Continuous choreography phases (0-3s Ingest, 3-6s Vision+Geo, 6-9s RAG+Guard, 9-12s Dossier)
+  const phase = t < 3 ? 0 : t < 6 ? 1 : t < 9 ? 2 : 3;
+  const phaseLabels = [
+    "1. Collecting photos, maps & official records",
+    "2. Scanning rooms with Vision AI & measuring distance",
+    "3. Matching interiors (BM25 + Vector) & blocking hallucinations",
+    "4. Publishing verified property dossier",
+  ];
+
+  const packetProgress = Math.min(1, Math.max(0, t / 2.6));
+  const scanY = phase === 1 ? ((t - 3) / 3) * 100 : phase > 1 ? 100 : 0;
+  const showRagMatch = t >= 6.0;
+  const showSeaViewRejected = t >= 7.2;
+  const showCleanDossier = t >= 9.0;
 
   return (
-    <div className="rounded-2xl border border-system-pi/25 bg-surface-1 p-4 sm:p-6 flex flex-col gap-4 overflow-hidden">
-      {/* Storyboard Header & Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <StatusPill label="HOW IT WORKS · ANIMATED WALKTHROUGH" tone="pi" />
-          <span className="font-mono text-xs text-fg-muted">
-            Beat {current.step} / 04
+    <div className="rounded-2xl border border-system-pi/25 bg-surface-1 p-4 sm:p-5 flex flex-col gap-4 overflow-hidden">
+      {/* Minimal Motion Header */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="h-2.5 w-2.5 rounded-full bg-system-pi animate-pulse shrink-0" />
+          <span className="font-mono text-xs font-semibold text-system-pi truncate">
+            {phaseLabels[phase]}
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsPlaying((p) => !p)}
-          className="min-h-9 inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-card px-3 py-1.5 font-sans text-xs font-semibold text-fg hover:bg-surface-2 transition-colors cursor-pointer"
-        >
-          <Icon name={isPlaying ? "pause" : "play"} size={13} />
-          <span>{isPlaying ? "Pause" : "Play"}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPlaying((p) => !p)}
+            className="min-h-8 inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-card px-2.5 py-1 font-sans text-xs font-semibold text-fg hover:bg-surface-2 transition-colors cursor-pointer"
+          >
+            <Icon name={isPlaying ? "pause" : "play"} size={12} />
+            <span>{isPlaying ? "Pause" : "Play"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setElapsedMs(0);
+              setIsPlaying(true);
+            }}
+            className="min-h-8 inline-flex items-center gap-1 rounded-lg border border-border-strong bg-card px-2.5 py-1 font-sans text-xs font-semibold text-fg-muted hover:text-fg transition-colors cursor-pointer"
+            aria-label="Replay animation"
+          >
+            <Icon name="reset" size={12} />
+          </button>
+        </div>
       </div>
 
-      {/* Beat Selector Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {BEATS.map((item, idx) => {
-          const active = idx === beat;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => {
-                setBeat(idx);
-                setIsPlaying(false);
-              }}
-              className={clsx(
-                "min-w-0 rounded-xl border px-3 py-2 text-left transition-all cursor-pointer flex items-center gap-2",
-                active
-                  ? "border-system-pi bg-card shadow-xs ring-1 ring-system-pi/30"
-                  : "border-border-subtle bg-card/60 hover:bg-card"
-              )}
-            >
+      {/* Continuous Visual Storyboard Canvas */}
+      <div className="rounded-xl border border-border-subtle bg-card p-4 sm:p-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1.25fr_auto_1fr] gap-3 items-center">
+          {/* LEFT: Raw Listing + 3 Sources */}
+          <div className="flex flex-col gap-2.5 min-w-0">
+            <div className="rounded-xl border border-border-strong bg-surface-1 p-3 flex flex-col gap-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-display text-xs font-bold text-fg">
+                  Raw Listing
+                </span>
+                <span className="font-mono text-[10px] text-fg-muted">
+                  Portal Input
+                </span>
+              </div>
+              <p className="font-sans text-xs text-fg-muted leading-snug">
+                &ldquo;Oak kitchen · Near Metro · Panoramic sea view&rdquo;
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-1.5">
+              {[
+                { label: "Photos", icon: "eye" as const },
+                { label: "Maps", icon: "layers" as const },
+                { label: "Catastro", icon: "database" as const },
+              ].map((src, i) => (
+                <motion.div
+                  key={src.label}
+                  animate={{
+                    borderColor:
+                      phase === 0
+                        ? "var(--color-system-pi)"
+                        : "var(--color-border-subtle)",
+                    scale: phase === 0 && Math.floor(t * 2) % 3 === i ? 1.03 : 1,
+                  }}
+                  className="rounded-lg border bg-surface-1 p-2 flex flex-col items-center gap-1 text-center"
+                >
+                  <Icon name={src.icon} size={13} className="text-system-pi" />
+                  <span className="font-mono text-[10px] font-medium text-fg">
+                    {src.label}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* ANIMATED FLOW ARROW 1 */}
+          <div className="hidden lg:flex items-center justify-center w-10" aria-hidden="true">
+            <svg viewBox="0 0 40 20" className="w-10 h-5">
+              <line
+                x1="2"
+                y1="10"
+                x2="34"
+                y2="10"
+                stroke="var(--color-border-strong)"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+              />
+              <circle
+                cx={4 + packetProgress * 28}
+                cy="10"
+                r="4"
+                fill="var(--color-system-pi)"
+              />
+            </svg>
+          </div>
+
+          {/* CENTER: Vision Laser + Geo Radar + Hallucination Shield */}
+          <div className="rounded-xl border border-system-pi/30 bg-system-pi/5 p-3.5 flex flex-col gap-3 min-w-0">
+            <div className="grid grid-cols-2 gap-2">
+              {/* Photo Scan Box */}
+              <div className="relative rounded-lg border border-border-strong bg-card p-2.5 h-20 overflow-hidden flex flex-col justify-between">
+                {phase === 1 && (
+                  <div
+                    style={{ top: `${scanY}%` }}
+                    className="absolute inset-x-0 h-0.5 bg-system-pi shadow-sm transition-none"
+                  />
+                )}
+                <span className="font-mono text-[10px] text-fg-muted">
+                  Vision AI
+                </span>
+                <span
+                  className={clsx(
+                    "font-sans text-xs font-bold transition-opacity duration-300",
+                    t >= 3.5 ? "text-system-pi opacity-100" : "text-fg-muted opacity-40"
+                  )}
+                >
+                  Oak Kitchen
+                </span>
+              </div>
+
+              {/* Geo Radar Box */}
+              <div className="relative rounded-lg border border-border-strong bg-card p-2.5 h-20 overflow-hidden flex flex-col justify-between">
+                <span className="font-mono text-[10px] text-fg-muted">
+                  DuckDB Geo
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={clsx(
+                      "h-2 w-2 rounded-full",
+                      phase === 1 ? "bg-pass animate-ping" : "bg-pass"
+                    )}
+                  />
+                  <span
+                    className={clsx(
+                      "font-sans text-xs font-bold transition-opacity duration-300",
+                      t >= 4.2 ? "text-pass opacity-100" : "text-fg-muted opacity-40"
+                    )}
+                  >
+                    420m Metro
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Hybrid RAG + Hallucination Gate Strip */}
+            <div className="rounded-lg border border-border-subtle bg-card px-3 py-2 flex items-center justify-between gap-2">
+              <div className="flex flex-col min-w-0">
+                <span className="font-mono text-[10px] text-fg-muted">
+                  Tantivy + ONNX Match
+                </span>
+                <span
+                  className={clsx(
+                    "font-sans text-xs font-semibold truncate transition-opacity duration-300",
+                    showRagMatch ? "text-fg opacity-100" : "text-fg-muted opacity-40"
+                  )}
+                >
+                  Nordic Oak Island #04
+                </span>
+              </div>
               <span
                 className={clsx(
-                  "font-mono text-[11px] font-bold px-1.5 py-0.5 rounded shrink-0",
-                  active
-                    ? "bg-system-pi text-on-accent"
+                  "rounded-full px-2 py-0.5 font-mono text-[10px] font-bold border shrink-0 transition-all duration-300",
+                  showSeaViewRejected
+                    ? "bg-reject/10 text-reject border-reject/30"
+                    : "bg-surface-1 text-fg-muted border-border-subtle"
+                )}
+              >
+                {showSeaViewRejected ? "Sea view: BLOCKED" : "Schema Gate"}
+              </span>
+            </div>
+          </div>
+
+          {/* ANIMATED FLOW ARROW 2 */}
+          <div className="hidden lg:flex items-center justify-center w-10" aria-hidden="true">
+            <svg viewBox="0 0 40 20" className="w-10 h-5">
+              <line
+                x1="2"
+                y1="10"
+                x2="34"
+                y2="10"
+                stroke="var(--color-border-strong)"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+              />
+              <circle
+                cx={showCleanDossier ? 32 : t >= 6 ? 4 + ((t - 6) / 3) * 28 : 4}
+                cy="10"
+                r="4"
+                fill={showCleanDossier ? "var(--color-pass)" : "var(--color-system-pi)"}
+              />
+            </svg>
+          </div>
+
+          {/* RIGHT: Clean Verified Dossier */}
+          <motion.div
+            animate={{
+              borderColor: showCleanDossier
+                ? "var(--color-pass)"
+                : "var(--color-border-subtle)",
+              opacity: showCleanDossier ? 1 : 0.55,
+            }}
+            className="rounded-xl border bg-surface-1 p-3 flex flex-col gap-2 min-w-0"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-display text-xs font-bold text-fg">
+                Verified Dossier
+              </span>
+              <span
+                className={clsx(
+                  "rounded-full px-2 py-0.5 font-mono text-[10px] font-bold",
+                  showCleanDossier
+                    ? "bg-pass/15 text-pass"
                     : "bg-surface-2 text-fg-muted"
                 )}
               >
-                {item.step}
+                {showCleanDossier ? "GROUNDED" : "WAIT..."}
               </span>
-              <span className="font-sans text-xs font-semibold text-fg truncate">
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
+            </div>
+
+            <div className="flex flex-col gap-1 font-sans text-xs">
+              <div className="flex items-center gap-1.5 text-pass">
+                <Icon name="checkCircle" size={13} />
+                <span>Oak kitchen (Photo #4)</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-pass">
+                <Icon name="checkCircle" size={13} />
+                <span>420m to Metro (Map)</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-reject line-through opacity-75">
+                <Icon name="close" size={13} />
+                <span>Sea view (No proof)</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
 
-      {/* Animated Stage Canvas */}
-      <div className="rounded-xl border border-border-subtle bg-card p-4 sm:p-5 min-h-[230px] flex flex-col justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h3 className="font-display text-base sm:text-lg font-bold text-fg">
-            {current.title}
-          </h3>
-          <Text variant="muted" className="text-xs sm:text-sm max-w-3xl">
-            {current.caption}
-          </Text>
-        </div>
-
-        <AnimatePresence mode="wait">
-          {beat === 0 && (
-            <motion.div
-              key="beat-collect"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center"
-            >
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: "Listing Photos", tag: "Playwright", icon: "eye" as const },
-                  { label: "Overture Maps", tag: "Footprints", icon: "layers" as const },
-                  { label: "Google Places", tag: "Transit & POI", icon: "search" as const },
-                  { label: "Catastro API", tag: "Parcel Data", icon: "database" as const },
-                ].map((src, i) => (
-                  <motion.div
-                    key={src.label}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.08, duration: 0.25 }}
-                    className="rounded-lg border border-border-subtle bg-surface-1 p-2.5 flex items-center gap-2 min-w-0"
-                  >
-                    <span className="h-7 w-7 rounded-md bg-system-pi/10 text-system-pi flex items-center justify-center shrink-0">
-                      <Icon name={src.icon} size={14} />
-                    </span>
-                    <div className="flex flex-col min-w-0">
-                      <span className="font-sans text-xs font-semibold text-fg truncate">
-                        {src.label}
-                      </span>
-                      <span className="font-mono text-[10px] text-fg-muted truncate">
-                        {src.tag}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-center">
-                <motion.div
-                  animate={{ x: [0, 6, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                  className="h-9 w-9 rounded-full bg-system-pi/10 text-system-pi flex items-center justify-center"
-                >
-                  <Icon name="arrowRight" size={18} />
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ scale: 0.96, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.3 }}
-                className="rounded-xl border border-system-pi/30 bg-system-pi/5 p-4 flex flex-col gap-2"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-display text-sm font-bold text-fg">
-                    DuckDB Spatial Hub
-                  </span>
-                  <StatusPill label="SHA-256 Pinned" tone="pi" />
-                </div>
-                <span className="font-sans text-xs text-fg-muted">
-                  Joins coordinates, geometry buffers, and verified media into one reproducible record. Missing fields stay <code className="font-mono text-fg">UNKNOWN</code>.
-                </span>
-              </motion.div>
-            </motion.div>
-          )}
-
-          {beat === 1 && (
-            <motion.div
-              key="beat-vision"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center"
-            >
-              {/* Stylized Photo Frame with Scanning Beam */}
-              <div className="relative rounded-xl border border-border-strong bg-surface-1 p-4 h-36 overflow-hidden flex flex-col justify-between">
-                <motion.div
-                  animate={{ y: [0, 110, 0] }}
-                  transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
-                  className="absolute inset-x-0 top-2 h-0.5 bg-system-pi shadow-sm"
-                />
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-fg-muted">
-                    IMG_042.JPG · 24mm FOV
-                  </span>
-                  <StatusPill label="Gemini Vision" tone="pi" />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-lg border border-system-pi/40 bg-card/90 p-2">
-                    <span className="font-mono text-[11px] font-semibold text-system-pi block">
-                      Kitchen · Oak
-                    </span>
-                    <span className="font-sans text-[11px] text-fg-muted">
-                      Bright natural light
-                    </span>
-                  </div>
-                  <div className="rounded-lg border border-border-subtle bg-card/90 p-2">
-                    <span className="font-mono text-[11px] font-semibold text-fg block">
-                      Open Dining
-                    </span>
-                    <span className="font-sans text-[11px] text-fg-muted">
-                      Camera angle: 18 deg
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                {[
-                  { label: "Room classification & materials", status: "Tagged", tone: "pass" as const },
-                  { label: "Camera angle & geometry estimate", status: "Calibrated", tone: "pi" as const },
-                  { label: "Blurry / duplicate thumbnail", status: "Filtered Out", tone: "reject" as const },
-                ].map((row, idx) => (
-                  <motion.div
-                    key={row.label}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="rounded-lg border border-border-subtle bg-surface-1 px-3 py-2 flex items-center justify-between gap-2"
-                  >
-                    <span className="font-sans text-xs font-medium text-fg">
-                      {row.label}
-                    </span>
-                    <StatusPill label={row.status} tone={row.tone} />
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {beat === 2 && (
-            <motion.div
-              key="beat-rag"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr_1fr] gap-3 items-center"
-            >
-              <div className="rounded-xl border border-border-subtle bg-surface-1 p-3 flex flex-col gap-1.5">
-                <span className="font-mono text-[11px] text-fg-muted">USER QUERY</span>
-                <span className="font-display text-sm font-bold text-fg">
-                  &ldquo;bright oak kitchen&rdquo;
-                </span>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <motion.div
-                  initial={{ scaleX: 0.85, opacity: 0 }}
-                  animate={{ scaleX: 1, opacity: 1 }}
-                  className="rounded-lg border border-border-subtle bg-surface-1 p-2.5 flex items-center justify-between gap-2"
-                >
-                  <span className="font-sans text-xs font-semibold text-fg">
-                    Tantivy BM25 (Keywords)
-                  </span>
-                  <StatusPill label="Exact Match" tone="neutral" />
-                </motion.div>
-                <motion.div
-                  initial={{ scaleX: 0.85, opacity: 0 }}
-                  animate={{ scaleX: 1, opacity: 1 }}
-                  transition={{ delay: 0.12 }}
-                  className="rounded-lg border border-system-pi/30 bg-system-pi/5 p-2.5 flex items-center justify-between gap-2"
-                >
-                  <span className="font-sans text-xs font-semibold text-fg">
-                    ONNX 384-d Vectors
-                  </span>
-                  <StatusPill label="Semantic Rank" tone="pi" />
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.22 }}
-                className="rounded-xl border border-pass/30 bg-pass/5 p-3 flex flex-col gap-1.5"
-              >
-                <span className="font-mono text-[11px] text-pass font-semibold">
-                  RRF FUSION TOP HIT
-                </span>
-                <span className="font-display text-sm font-bold text-fg">
-                  Nordic Oak Island #04
-                </span>
-                <span className="font-mono text-[11px] text-fg-muted">
-                  Zero external vector DB
-                </span>
-              </motion.div>
-            </motion.div>
-          )}
-
-          {beat === 3 && (
-            <motion.div
-              key="beat-guard"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-3"
-            >
-              <motion.div
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="rounded-xl border border-reject/30 bg-reject/5 p-3.5 flex flex-col gap-2"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-sans text-xs font-bold text-reject">
-                    Blocked Unsupported Claim
-                  </span>
-                  <StatusPill label="REJECTED" tone="reject" />
-                </div>
-                <span className="font-mono text-xs text-fg">
-                  &ldquo;Panoramic sea view from terrace&rdquo;
-                </span>
-                <span className="font-sans text-xs text-fg-muted">
-                  No matching photo evidence or coastal line-of-sight in DuckDB geometry.
-                </span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.12 }}
-                className="rounded-xl border border-pass/30 bg-pass/5 p-3.5 flex flex-col gap-2"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-sans text-xs font-bold text-pass">
-                    Verified Property Fact
-                  </span>
-                  <StatusPill label="PUBLISHED" tone="pass" />
-                </div>
-                <span className="font-mono text-xs text-fg">
-                  &ldquo;420m walk to Metro · Oak Kitchen (IMG_042)&rdquo;
-                </span>
-                <span className="font-sans text-xs text-fg-muted">
-                  Backed by Google Places distance + Vision evidence ID.
-                </span>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Continuous Timeline Scrubber */}
+      <div
+        className="h-1.5 w-full rounded-full bg-surface-2 overflow-hidden cursor-pointer"
+        onClick={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+          setElapsedMs(ratio * DURATION_MS);
+        }}
+        title="Click anywhere to scrub timeline"
+      >
+        <div
+          style={{ width: `${progressPct}%` }}
+          className="h-full bg-system-pi transition-none"
+        />
       </div>
     </div>
   );
